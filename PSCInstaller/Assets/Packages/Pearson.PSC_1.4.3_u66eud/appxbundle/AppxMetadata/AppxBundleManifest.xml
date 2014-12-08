@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Bundle xmlns="http://schemas.microsoft.com/appx/2013/bundle" SchemaVersion="2.0">
+	<Identity Name="Pearson.PSC" Publisher="CN=&quot;Pearson Education, Inc.&quot;, OU=Pearson IT Pro Certification, OU=Digital ID Class 3 - Microsoft Software Validation v2, O=&quot;Pearson Education, Inc.&quot;, L=Indianapolis, S=Indiana, C=US" Version="2014.1029.1827.1288"/>
+	<Packages>
+		<Package Type="resource" Version="1.4.3.0" ResourceId="split.language-de" FileName="PearsonPOC.Win8_1.4.3.0_language-de.appx" Offset="70" Size="39561">
+			<Resources>
+				<Resource Language="de-de"/>
+				<Resource Language="de"/>
+			</Resources>
+		</Package>
+		<Package Type="resource" Version="1.4.3.0" ResourceId="split.language-fr" FileName="PearsonPOC.Win8_1.4.3.0_language-fr.appx" Offset="39725" Size="40223">
+			<Resources>
+				<Resource Language="fr-fr"/>
+				<Resource Language="fr"/>
+			</Resources>
+		</Package>
+		<Package Type="resource" Version="1.4.3.0" ResourceId="split.scale-140" FileName="PearsonPOC.Win8_1.4.3.0_scale-140.appx" Offset="80040" Size="52709">
+			<Resources>
+				<Resource Scale="140"/>
+			</Resources>
+		</Package>
+		<Package Type="resource" Version="1.4.3.0" ResourceId="split.scale-180" FileName="PearsonPOC.Win8_1.4.3.0_scale-180.appx" Offset="132841" Size="60398">
+			<Resources>
+				<Resource Scale="180"/>
+			</Resources>
+		</Package>
+		<Package Type="application" Version="1.4.3.0" Architecture="x86" FileName="PearsonPOC.Win8_1.4.3.0_x86.appx" Offset="193325" Size="39552819">
+			<Resources>
+				<Resource Language="EN-US"/>
+				<Resource Language="EN"/>
+				<Resource Scale="100"/>
+			</Resources>
+		</Package>
+	</Packages>
+</Bundle>

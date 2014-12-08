@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PSCInstaller.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PackageRelativePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Assets/Packages/Pearson.PSC_1.4.3_u66eud/</Value>
+    </Setting>
+    <Setting Name="AppBundleName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Pearson.PSC_1.4.3.0.appxbundle</Value>
+    </Setting>
+    <Setting Name="RelativeDependencyPaths" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Dependencies/x64/Microsoft.VCLibs.x64.120.00.appx&lt;/string&gt;
+  &lt;string&gt;Dependencies/x86/Microsoft.VCLibs.x86.120.00.appx&lt;/string&gt;
+  &lt;string&gt;Dependencies/ARM/Microsoft.VCLibs.ARM.120.00.appx&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="FullPackageName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Pearson.PSC_1.4.3.0_x86__2dnf9zyx96z42</Value>
+    </Setting>
+    <Setting Name="PublisherId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2dnf9zyx96z42</Value>
+    </Setting>
+    <Setting Name="PackageName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Pearson.PSC</Value>
+    </Setting>
+    <Setting Name="ContentFilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Pearson\PSC\8-12win.zip</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
