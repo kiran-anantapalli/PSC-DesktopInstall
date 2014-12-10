@@ -31,5 +31,31 @@ namespace PSCInstaller
         {
             Navigate(new Uri("Views/StartPage.xaml", UriKind.Relative));
         }
+
+        private void NavigationWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+        	this.DragMove();
+        }
+
+        private void PART_CLOSE_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void PART_MAXIMIZE_RESTORE_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = System.Windows.WindowState.Normal;
+        }
+
+        private void PART_MINIMIZE_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = System.Windows.WindowState.Minimized;
+            
+        }
+
+        //private void PART_TITLEBAR_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    this.DragMove();
+        //}
     }
 }

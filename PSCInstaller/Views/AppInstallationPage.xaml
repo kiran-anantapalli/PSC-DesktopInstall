@@ -14,14 +14,24 @@
         <converters:BoolToNotBoolConverter x:Key="boolToNotBoolConverter" />
     </Page.Resources>
     
-    <Grid Background="white">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height=".30*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="50"/>
-            <RowDefinition Height=".20*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView ItemsSource="{Binding Events}">
+        
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="Installing Application Data" 
+                   FontFamily="{StaticResource GillSansBookFontFamily}"
+                   FontSize="30"
+                   Margin="10 10 10 0"
+                   Foreground="White" TextWrapping="Wrap" TextAlignment="Center"/>
+
+        <ProgressBar x:Name="progress" Grid.Row="1" Margin="10" Maximum="100" Minimum="0" Value="{Binding Progress}"/>
+
+        <ListView Grid.Row="2" ItemsSource="{Binding Events}" Margin="10">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -32,12 +42,38 @@
             </ListView.ItemTemplate>
         </ListView>
         
-        <ProgressBar x:Name="progress" Grid.Row="1" Maximum="100" Minimum="0" Value="{Binding Progress}"/>
-        <Button Grid.Row="2" Padding="10" Content="Next" Width="75" VerticalAlignment="Center" HorizontalAlignment="Right" 
+        <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+
+            <Button x:Name="NextButton"  Padding="10" Content="Next" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
                 Command="{Binding NextCommand}"
+                Style="{StaticResource StartPageButtonStyle}"
+                ContentTemplate="{StaticResource NextIcon}"
                 IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
-        <Button Grid.Row="2" Padding="10" Content="Previous" Width="75" VerticalAlignment="Center" HorizontalAlignment="Left" 
-                Command="{Binding PreviousCommand}" 
-                IsEnabled="{Binding IsInProgress, Converter={StaticResource boolToNotBoolConverter}}" />
+            <Rectangle Height="30" Width="100" RenderTransformOrigin=".5, .5" 
+                       RenderTransform="{StaticResource VerticalFlipTransformGroup}" 
+                       OpacityMask="{StaticResource VerticalTransparentGradient}" >
+                <Rectangle.Fill>
+                    <VisualBrush Visual="{Binding ElementName=NextButton}"></VisualBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" >
+                <Button x:Name="PreviousButton"  Content="Previous" Width="100"
+                    Command="{Binding PreviousCommand}" 
+                    Style="{StaticResource StartPageButtonStyle}" 
+                    ContentTemplate="{StaticResource PreviousIcon}"
+                    IsEnabled="{Binding IsInProgress, Converter={StaticResource boolToNotBoolConverter}}">
+
+                </Button>
+            <Rectangle Height="30" Width="100" RenderTransformOrigin=".5, .5" 
+                       RenderTransform="{StaticResource VerticalFlipTransformGroup}" 
+                       OpacityMask="{StaticResource VerticalTransparentGradient}" >
+                <Rectangle.Fill>
+                    <VisualBrush Visual="{Binding ElementName=PreviousButton}"></VisualBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </StackPanel>
+
     </Grid>
 </Page>

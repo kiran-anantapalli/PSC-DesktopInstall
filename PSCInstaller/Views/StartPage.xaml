@@ -8,25 +8,54 @@
       d:DesignHeight="350" d:DesignWidth="525"
       d:DataContext="{d:DesignInstance vms:StartViewModel, d:IsDesignTimeCreatable=True}"
       Title="Start">
-    <Grid Background="{DynamicResource Background}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height=".3*"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-            <Image  Height="310" Width="150" Source="/PSCInstaller;component/Assets/Images/SplashScreen.scale-100.png"/>
-            <!--<Canvas Grid.Row="0" Margin="100,0,0,0">
-                <Viewbox Width="400">
-                    <ContentControl Style="{StaticResource PearsonLogo}"/>
-                </Viewbox>
-            </Canvas>-->
         
-        <TextBlock Grid.Row="1" Text="Welcome to the installer for Pearson System of Courses" Foreground="White" TextWrapping="Wrap" TextAlignment="Center" FontSize="20"/>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-
-            <Button Content="Install" Style="{StaticResource StartPageButtonStyle}" Command="{Binding NavigateToInstallationCommand}"/>
-            <Button Content="UnInstall" Style="{StaticResource StartPageButtonStyle}" Command="{Binding NavigateToUnInstallCommand}"/>
+        <Viewbox Margin="30" VerticalAlignment="Center">
+            <Path Fill="White" Data="{StaticResource PearsonLogoGeometry}"/>
+        </Viewbox>
+        
+        <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="Welcome to the installer for Pearson System of Courses" Foreground="White" TextWrapping="Wrap" TextAlignment="Center" FontSize="15"/>
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal">
+            <StackPanel Margin="0,0,5,0">
+                <StackPanel>
+                    <TextBlock TextAlignment="Center" FontSize="18" FontFamily="{StaticResource GillSansBoldFontFamily}" Foreground="{StaticResource ContrastForeground}">Install</TextBlock>
+                    <Button x:Name="InstallButton" Grid.Column="0" Width="80" Height="80" 
+                        ContentTemplate="{StaticResource InstallIcon}"
+                        Style="{StaticResource StartPageButtonStyle}"
+                        Command="{Binding NavigateToInstallationCommand}">
+                    </Button>
+                </StackPanel>
+                <Rectangle Height="50" Width="80" RenderTransformOrigin=".5 .5"
+                	RenderTransform="{StaticResource VerticalFlipTransformGroup}" 
+                	OpacityMask="{StaticResource VerticalTransparentGradient}">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{Binding ElementName=InstallButton}"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </StackPanel>
+            
+            <StackPanel Margin="0,0,0,0">
+                <StackPanel>
+                    <TextBlock TextAlignment="Center" FontSize="18" FontFamily="{StaticResource GillSansBoldFontFamily}" Foreground="{StaticResource ContrastForeground}">Uninstall</TextBlock>
+                    <Button  x:Name="UninstallButton" Grid.Column="1" Width="80" Height="80" 
+                        ContentTemplate="{StaticResource UninstallIcon}"
+                        Style="{StaticResource StartPageButtonStyle}" 
+                        Command="{Binding NavigateToUnInstallCommand}">
+                    </Button>
+                </StackPanel>
+                <Rectangle Height="50" Width="80" RenderTransformOrigin=".5 .5"
+                           RenderTransform="{StaticResource VerticalFlipTransformGroup}"
+                           OpacityMask="{StaticResource VerticalTransparentGradient}">
+                    <Rectangle.Fill>
+                        <VisualBrush Visual="{Binding ElementName=UninstallButton}"></VisualBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
