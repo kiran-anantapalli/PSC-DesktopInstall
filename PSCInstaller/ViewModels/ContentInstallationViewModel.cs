@@ -116,7 +116,7 @@ namespace PSCInstaller.ViewModels
             }
             else if (e.Subject == DeploymentSubject.Installing)
             {
-                message = string.Format("Step 2 of 2: {0} {1}% complete.", e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
+                message = string.Format("Step 2 of 2: {0} {1:f2}% complete.", e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
             }
             else
                 throw new ArgumentException(string.Format("{0} was unexpected", e.Subject));
