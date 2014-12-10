@@ -42,6 +42,7 @@ namespace PSCInstaller.Sevices
             var extractDirectory = await UnzipToTemporaryLocationAsync(contentPackageUri);
             await CopyToUserPackageInstallationDirectoryAsync(extractDirectory);
             await CleanupDirectoryAsync(extractDirectory);
+            RaiseMessage("Installation Complete");
         }
 
         private async Task CleanupDirectoryAsync(string directory)
@@ -51,7 +52,6 @@ namespace PSCInstaller.Sevices
                 RaiseMessage("Cleaning up...");
                 if (Directory.Exists(directory))
                     Directory.Delete(directory, true);
-                RaiseMessage("Installation Complete");
             });
         }
 
@@ -71,10 +71,9 @@ namespace PSCInstaller.Sevices
                 }
 
                 extractDirectory = Path.Combine(tempPath, "_" + archiveName);
-                if (Directory.Exists(extractDirectory))
-                    Directory.Delete(extractDirectory, true);
-                var di = Directory.CreateDirectory(extractDirectory);
+                await CleanupDirectoryAsync(extractDirectory);
 
+                var di = Directory.CreateDirectory(extractDirectory);
                 using (var fs = new FileStream(zipFileUri.AbsolutePath, FileMode.Open))
                 {
                     using (ZipArchive arch = new ZipArchive(fs, ZipArchiveMode.Read) )
