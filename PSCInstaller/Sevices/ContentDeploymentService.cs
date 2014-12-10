@@ -59,7 +59,6 @@ namespace PSCInstaller.Sevices
         {
             double perfectComplete = 0;
             RaiseProgress(perfectComplete);
-            RaiseMessage("Unpacking Content");
             string extractDirectory = string.Empty;
             try
             {
@@ -73,6 +72,7 @@ namespace PSCInstaller.Sevices
                 extractDirectory = Path.Combine(tempPath, "_" + archiveName);
                 await CleanupDirectoryAsync(extractDirectory);
 
+                RaiseMessage("Unpacking Content");
                 var di = Directory.CreateDirectory(extractDirectory);
                 using (var fs = new FileStream(zipFileUri.AbsolutePath, FileMode.Open))
                 {
