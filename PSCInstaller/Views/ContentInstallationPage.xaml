@@ -36,7 +36,7 @@
 
             <Button Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Cancel" Width="100"
                     Command="{Binding CancelCommand}" 
-                    Style="{StaticResource NavigationButtonStyle}" Background="Red" 
+                    Style="{StaticResource NavigationButtonStyle}" Background="#FFC90531" 
                     Visibility="{Binding IsInProgress, Converter={StaticResource boolToVisibilityConverter}}"/>
             
             <Button Grid.Row="3" Content="Done" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
