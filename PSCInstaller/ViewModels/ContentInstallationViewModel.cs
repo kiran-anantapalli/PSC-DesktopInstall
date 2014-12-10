@@ -13,6 +13,14 @@ namespace PSCInstaller.ViewModels
 {
     public class ContentInstallationViewModel : BaseViewModel
     {
+        
+        private ObservableCollection<EventMessageViewModel> _events;
+        public ObservableCollection<EventMessageViewModel> Events
+        {
+            get { return _events; }
+            set { SetProperty(ref _events, value); }
+        }
+
         private string _message;
         public string Message
         {
@@ -34,8 +42,16 @@ namespace PSCInstaller.ViewModels
             set { SetProperty(ref _nextCommand, value); }
         }
 
+        private ICommand _cancelCommand;
+        public ICommand CancelCommand
+        {
+            get { return _cancelCommand; }
+            set { SetProperty(ref _cancelCommand, value); }
+        }
+        
         public ContentInstallationViewModel()
         {
+            Events = new ObservableCollection<EventMessageViewModel>();
         }
 
         //protected override void SetDesignerProperties()
@@ -48,12 +64,20 @@ namespace PSCInstaller.ViewModels
         public override async Task Initialize()
         {
             NextCommand = new RelayCommand<object>((e) => { OnNavigateToStart(); });
+            CancelCommand = new RelayCommand<object>((e) => { OnCancel(); });
 
             ContentDeploymentService.Instance.ProgressEvent += Instance_ProgressEvent;
             ContentDeploymentService.Instance.MessagingEvent += Instance_MessagingEvent;
+            ContentDeploymentService.Instance.FileUpdateEvent += Instance_FileUpdateEvent;
 
             string scheme = @"file:///";
-            await ContentDeploymentService.Instance.DeployContent(new Uri(Path.Combine(scheme, Properties.Settings.Default.ContentFilePath)));
+            ContentDeploymentService.Instance.DeployContentAsync(new Uri(Path.Combine(scheme, Properties.Settings.Default.ContentFilePath)));
+        }
+
+        private void OnCancel()
+        {
+            if( ContentDeploymentService.Instance.CancelDeployment() )
+                OnNavigateToStart();
         }
 
         public override void Dispose()
@@ -61,13 +85,17 @@ namespace PSCInstaller.ViewModels
             base.Dispose();
             ContentDeploymentService.Instance.ProgressEvent -= Instance_ProgressEvent;
             ContentDeploymentService.Instance.MessagingEvent -= Instance_MessagingEvent;
+            ContentDeploymentService.Instance.FileUpdateEvent -= Instance_FileUpdateEvent;
+            ContentDeploymentService.Instance.CancelDeployment();
         }
 
         void Instance_MessagingEvent(object sender, Services.MessageNotificationEventArgs e)
         {
             UpdateUIThreadSafe(() =>
             {
-                Message = e.Message;
+                if (Events.Count() > 10)
+                    Events.RemoveAt(Events.Count() - 1);
+                Events.Insert(0, new EventMessageViewModel(e.Message, e.TimeStamp));
             });
         }
 
@@ -79,6 +107,26 @@ namespace PSCInstaller.ViewModels
             });
         }
 
+        void Instance_FileUpdateEvent(object sender, Services.FileProgressUpdateEventArgs e)
+        {
+            string message = string.Empty;
+            if (e.Subject == DeploymentSubject.Unpacking)
+            {
+                message = string.Format("Step 1 of 2: {0} {1} of {2} files.", e.Subject.ToString(), e.CurrentValue, e.TotalValue);
+            }
+            else if (e.Subject == DeploymentSubject.Installing)
+            {
+                message = string.Format("Step 2 of 2: {0} {1}% complete.", e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
+            }
+            else
+                throw new ArgumentException(string.Format("{0} was unexpected", e.Subject));
+
+            UpdateUIThreadSafe(() =>
+            {
+                Message = message;
+            });
+        }
+        
         public event EventHandler NavigateToStart;
         private void OnNavigateToStart()
         {

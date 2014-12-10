@@ -15,15 +15,21 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         
-        <Viewbox Margin="30" VerticalAlignment="Center">
+        <Viewbox Margin="60" VerticalAlignment="Center">
             <Path Fill="White" Data="{StaticResource PearsonLogoGeometry}"/>
         </Viewbox>
+
+        <TextBlock Grid.Row="1" HorizontalAlignment="Center"
+                   Style="{StaticResource Heading1}" 
+                   Foreground="{StaticResource ContrastForeground}"
+                   Text="Welcome to the installer for Pearson System of Courses" TextWrapping="Wrap"/>
         
-        <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="Welcome to the installer for Pearson System of Courses" Foreground="White" TextWrapping="Wrap" TextAlignment="Center" FontSize="15"/>
         <StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal">
             <StackPanel Margin="0,0,5,0">
                 <StackPanel>
-                    <TextBlock TextAlignment="Center" FontSize="18" FontFamily="{StaticResource GillSansBoldFontFamily}" Foreground="{StaticResource ContrastForeground}">Install</TextBlock>
+                    <TextBlock TextAlignment="Center"
+                               Style="{StaticResource Heading2}"
+                               Foreground="{StaticResource ContrastForeground}">Install</TextBlock>
                     <Button x:Name="InstallButton" Grid.Column="0" Width="80" Height="80" 
                         ContentTemplate="{StaticResource InstallIcon}"
                         Style="{StaticResource StartPageButtonStyle}"
@@ -41,7 +47,9 @@
             
             <StackPanel Margin="0,0,0,0">
                 <StackPanel>
-                    <TextBlock TextAlignment="Center" FontSize="18" FontFamily="{StaticResource GillSansBoldFontFamily}" Foreground="{StaticResource ContrastForeground}">Uninstall</TextBlock>
+                    <TextBlock TextAlignment="Center"
+                               Style="{StaticResource Heading2}"
+                               Foreground="{StaticResource ContrastForeground}">Uninstall</TextBlock>
                     <Button  x:Name="UninstallButton" Grid.Column="1" Width="80" Height="80" 
                         ContentTemplate="{StaticResource UninstallIcon}"
                         Style="{StaticResource StartPageButtonStyle}" 

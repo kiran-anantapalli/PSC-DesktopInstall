@@ -82,7 +82,7 @@ namespace PSCInstaller.ViewModels
         {
             UpdateUIThreadSafe(() =>
             {
-                Events.Add(new EventMessageViewModel() { InstallationEventMessage = e.Message, InstallationEventTimeStamp = e.TimeStamp });
+                Events.Add(new EventMessageViewModel(e.Message, e.TimeStamp));
             });
         }
 

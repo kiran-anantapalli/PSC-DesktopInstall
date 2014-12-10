@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PSCInstaller.Sevices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,18 @@ namespace PSCInstaller.Services
         }
     }
 
-    //public delegate void DeploymentProgressEventHandler(object sender, ProgressUpdateEventArgs e);
-    //public delegate void MessageNotificationEventHandler(object sender, MessageNotificationEventArgs e);
+    public class FileProgressUpdateEventArgs : EventArgs
+    {
+        public long CurrentValue { get; private set; }
+        public long TotalValue { get; private set; }
+        public DeploymentSubject Subject { get; private set; }
+        public FileProgressUpdateEventArgs(long currentFile, long totalFiles, DeploymentSubject subject)
+        {
+            CurrentValue = currentFile;
+            TotalValue = totalFiles;
+            Subject = subject;
+        }
+    }
+
 
 }

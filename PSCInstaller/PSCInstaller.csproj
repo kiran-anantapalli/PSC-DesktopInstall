@@ -63,6 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BoolToNotBoolConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ProgressToEnabledConverter.cs" />
     <Compile Include="Converters\ProgressToIndeterminantBoolConverter.cs" />
     <Compile Include="Sevices\ContentDeploymentService.cs" />

@@ -14,30 +14,28 @@
         <converters:ProgressToIndeterminantBoolConverter x:Key="progressToIndeterminantBoolConverter"/>
     </Page.Resources>
     
-    <Grid Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height=".30*"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height=".20*"/>
-        </Grid.RowDefinitions>
+    <Border Style="{StaticResource PageBaseStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <ListView ItemsSource="{Binding Events}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding InstallationEventTimeStamp}"/>
-                        <TextBlock Margin="20,0,0,0" Text="{Binding InstallationEventMessage}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
+            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Uninstalling Application" />
 
-        <ProgressBar x:Name="progress" Grid.Row="1" Maximum="100" Minimum="0" Value="{Binding Progress}" 
+            <ProgressBar x:Name="progress" Grid.Row="1" Value="{Binding Progress}" Style="{StaticResource ProgressBarStyle}"
                      IsIndeterminate="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToIndeterminantBoolConverter}}"/>
 
-        <Button Grid.Row="2" Padding="10" Content="Next" Width="75" VerticalAlignment="Center" HorizontalAlignment="Right" 
-                Command="{Binding NextCommand}"
-                IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
+            <ListView Grid.Row="2" Style="{StaticResource CommonListViewStyle}" ItemsSource="{Binding Events}" ItemTemplate="{StaticResource CommonListViewItemTemplate}" />
+            
+            <Button Grid.Row="3" Content="Done" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                    Command="{Binding NextCommand}"
+                    Style="{StaticResource NavigationButtonStyle}" Background="{StaticResource PearsonBackground}"
+                    IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
 
-    </Grid>
+        </Grid>
+    </Border>
 </Page>

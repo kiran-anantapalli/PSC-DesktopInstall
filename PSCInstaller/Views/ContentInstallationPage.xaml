@@ -12,22 +12,37 @@
     <Page.Resources>
         <converters:ProgressToEnabledConverter x:Key="progressToEnabledConverter" />
         <converters:BoolToNotBoolConverter x:Key="boolToNotBoolConverter" />
+        <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
+        
     </Page.Resources>
-    
-    <Grid Background="white">
-        <Grid.RowDefinitions>
-            <RowDefinition Height=".30*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height=".20*"/>
-        </Grid.RowDefinitions>
+    <Border Style="{StaticResource PageBaseStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
+            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Installing Content" TextWrapping="Wrap"/>
 
-        <StackPanel Grid.Row="1" >
-            <ProgressBar x:Name="progress" Height="50" Maximum="100" Minimum="0" Value="{Binding Progress}"/>
-            <TextBlock Text="{Binding Message}"></TextBlock>
-        </StackPanel>
-        <Button Grid.Row="2" Padding="10" Content="Next" Width="75" VerticalAlignment="Center" HorizontalAlignment="Right" 
-                Command="{Binding NextCommand}"
-                IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" >
+                <ProgressBar x:Name="progress" Grid.Row="1" Style="{StaticResource ProgressBarStyle}" Value="{Binding Progress}"/>
+                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Message}"></TextBlock>
+            </StackPanel>
 
-    </Grid>
+            <ListView Grid.Row="2" Style="{StaticResource CommonListViewStyle}" ItemsSource="{Binding Events}" ItemTemplate="{StaticResource CommonListViewItemTemplate}" />
+
+            <Button Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Cancel" Width="100"
+                    Command="{Binding CancelCommand}" 
+                    Style="{StaticResource NavigationButtonStyle}" Background="Red" 
+                    Visibility="{Binding IsInProgress, Converter={StaticResource boolToVisibilityConverter}}"/>
+            
+            <Button Grid.Row="3" Content="Done" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                    Command="{Binding NextCommand}"
+                    Style="{StaticResource NavigationButtonStyle}" Background="{StaticResource PearsonBackground}"
+                    IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
+        </Grid>
+    </Border>
 </Page>

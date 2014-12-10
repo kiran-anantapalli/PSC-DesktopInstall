@@ -5,8 +5,8 @@
         MouseLeftButtonDown="NavigationWindow_MouseLeftButtonDown">
     <NavigationWindow.Style>
         <Style TargetType="{x:Type NavigationWindow}">
-            <Setter Property="Width" Value="525"/>
-            <Setter Property="Height" Value="350"/>
+            <Setter Property="Width" Value="740"/>
+            <Setter Property="Height" Value="470"/>
             <Setter Property="Padding" Value="5" />
             <Setter Property="ShowsNavigationUI" Value="False"/>
             <Setter Property="WindowStyle" Value="None"/>

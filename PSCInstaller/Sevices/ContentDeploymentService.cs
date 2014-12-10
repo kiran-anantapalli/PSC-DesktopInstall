@@ -8,8 +8,15 @@ using System.IO;
 using System.IO.Compression;
 using System.IO.Packaging;
 using Windows.Management.Deployment;
+using System.Threading;
 namespace PSCInstaller.Sevices
 {
+    public enum DeploymentSubject
+    {
+        Unpacking,
+        Installing
+    }
+
     public class ContentDeploymentService 
         : IProgress<ProgressUpdateEventArgs>
     {
@@ -17,6 +24,7 @@ namespace PSCInstaller.Sevices
 
         private long _temporaryDirectorySize;
         private long _transferedDirectorySize;
+        private CancellationTokenSource _cancelSource;
 
         #region Singleton
 
@@ -28,20 +36,26 @@ namespace PSCInstaller.Sevices
 
         #endregion
 
-        public async Task DeployContent(Uri contentPackageUri)
+        public async Task DeployContentAsync(Uri contentPackageUri)
         {
-            var extractDirectory = await UnzipToTemporaryLocation(contentPackageUri);
-            
-            await CopyToUserPackageInstallationDirectory(extractDirectory);
-
-            RaiseMessage("Cleaning up...");
-            if (Directory.Exists(extractDirectory))
-                Directory.Delete(extractDirectory, true);
-            
-            RaiseMessage("Installation Complete");
+            _cancelSource = new CancellationTokenSource();
+            var extractDirectory = await UnzipToTemporaryLocationAsync(contentPackageUri);
+            await CopyToUserPackageInstallationDirectoryAsync(extractDirectory);
+            await CleanupDirectoryAsync(extractDirectory);
         }
 
-        private async Task<string> UnzipToTemporaryLocation(Uri zipFileUri)
+        private async Task CleanupDirectoryAsync(string directory)
+        {
+            await Task.Run(() =>
+            {
+                RaiseMessage("Cleaning up...");
+                if (Directory.Exists(directory))
+                    Directory.Delete(directory, true);
+                RaiseMessage("Installation Complete");
+            });
+        }
+
+        private async Task<string> UnzipToTemporaryLocationAsync(Uri zipFileUri)
         {
             double perfectComplete = 0;
             RaiseProgress(perfectComplete);
@@ -69,7 +83,14 @@ namespace PSCInstaller.Sevices
                         double totalUnits = arch.Entries.Count();
                         foreach (var item in arch.Entries)
                         {
+                            if( _cancelSource.IsCancellationRequested)
+                            {
+                                RaiseMessage("Process has been canceled");
+                                break;
+                            }
+
                             RaiseMessage(string.Format("Unpacking: {0}", item.Name));
+                            RaiseFileUpdate((long)unitsComplete, (long)totalUnits, DeploymentSubject.Unpacking);
                             if (item.Length == 0)
                             {
                                 var rootPathRemoved = item.FullName.Substring(item.FullName.IndexOf("/") + 1);
@@ -115,10 +136,13 @@ namespace PSCInstaller.Sevices
             return extractDirectory;
         }
 
-        private async Task CopyToUserPackageInstallationDirectory(string contentDirectory)
+        private async Task CopyToUserPackageInstallationDirectoryAsync(string contentDirectory)
         {
             if (!Directory.Exists(contentDirectory))
                 throw new InvalidOperationException(string.Format("directory {0} does not exist", contentDirectory));
+
+            if (_cancelSource == null || _cancelSource.IsCancellationRequested)
+                return;
 
             RaiseProgress(0);
             RaiseMessage("Installing Content");
@@ -130,10 +154,11 @@ namespace PSCInstaller.Sevices
             _transferedDirectorySize = 0;
             _temporaryDirectorySize = GetDirectorySize(contentDirectory);
 
-            await Task.Run(() =>
+            RaiseFileUpdate(_transferedDirectorySize, _temporaryDirectorySize, DeploymentSubject.Installing);
+            await Task.Run(async () =>
             {
-                CopyDirectory(contentDirectory, targetDirectoryPath);
-            });
+                await CopyDirectory(contentDirectory, targetDirectoryPath);
+            }, _cancelSource.Token);
         }
 
         private long GetDirectorySize(string rootDirectory)
@@ -147,7 +172,7 @@ namespace PSCInstaller.Sevices
             return size;
         }
 
-        private void CopyDirectory(string sourceDirectoryPath, string targetDirectoryPath)
+        private async Task CopyDirectory(string sourceDirectoryPath, string targetDirectoryPath)
         {
             //copy /Y /V "%scriptpath%PSC\_overwrite.flg" "%UserProfile%\AppData\Local\Packages\Pearson.PSC_2dnf9zyx96z42\LocalState"
             try
@@ -156,6 +181,9 @@ namespace PSCInstaller.Sevices
                 var fileNames = Directory.GetFiles(sourceDirectoryPath);
                 foreach (var filePath in fileNames)
                 {
+                    if (_cancelSource.IsCancellationRequested)
+                        return;
+
                     var fileName = Path.GetFileName(filePath);
                     var destFilePath = System.IO.Path.Combine(targetDirectoryPath, fileName);
                     File.Copy(filePath, destFilePath, true);
@@ -166,12 +194,16 @@ namespace PSCInstaller.Sevices
                     double perfectComplete = ((((double)_transferedDirectorySize / (double)_temporaryDirectorySize) * 100.0) * 0.5) + 50.0;
                     RaiseProgress(perfectComplete);
                     RaiseMessage(string.Format("Installing: {0}", fileName));
+                    RaiseFileUpdate(_transferedDirectorySize, _temporaryDirectorySize, DeploymentSubject.Installing);
                 }
 
                 // create sub directories
                 var directories = Directory.GetDirectories(sourceDirectoryPath, "*", SearchOption.TopDirectoryOnly);
                 foreach (var directory in directories)
                 {
+                    if (_cancelSource.IsCancellationRequested)
+                        return;
+
                     var directoryName = Path.GetFileName(directory);
                     var destDirectoryPath = System.IO.Path.Combine(targetDirectoryPath, directoryName);
 
@@ -179,13 +211,27 @@ namespace PSCInstaller.Sevices
                         Directory.CreateDirectory(destDirectoryPath);
 
                     var targetSubDirectoryPath = Path.Combine(targetDirectoryPath, directoryName);
-                    CopyDirectory(directory, targetSubDirectoryPath);
+                    await CopyDirectory(directory, targetSubDirectoryPath);
                 }
             }
             catch (Exception ex)
             {
                 RaiseMessage(string.Format("Error: {0}", ex.Message));
             }
+        }
+
+        public bool CancelDeployment()
+        {
+            if (_cancelSource == null)
+                return true;
+
+            _cancelSource.Cancel();
+            var result = _cancelSource.Token.WaitHandle.WaitOne(TimeSpan.FromSeconds(10));
+            if (!result)
+                RaiseMessage("Deployment cancellation timed out");
+            _cancelSource.Dispose();
+            _cancelSource = null;
+            return result;
         }
 
         public event EventHandler<ProgressUpdateEventArgs> ProgressEvent;
@@ -208,5 +254,12 @@ namespace PSCInstaller.Sevices
                 handler(this, new MessageNotificationEventArgs(message));
         }
 
+        public event EventHandler<FileProgressUpdateEventArgs> FileUpdateEvent;
+        public void RaiseFileUpdate(long fileNo, long totalFiles, DeploymentSubject subject)
+        {
+            var handler = FileUpdateEvent;
+            if (handler != null)
+                handler(this, new FileProgressUpdateEventArgs(fileNo, totalFiles, subject));
+        }
     }
 }
