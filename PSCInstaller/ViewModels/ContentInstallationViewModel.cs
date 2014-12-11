@@ -70,8 +70,7 @@ namespace PSCInstaller.ViewModels
             ContentDeploymentService.Instance.MessagingEvent += Instance_MessagingEvent;
             ContentDeploymentService.Instance.FileUpdateEvent += Instance_FileUpdateEvent;
 
-            string scheme = @"file:///";
-            ContentDeploymentService.Instance.DeployContentAsync(new Uri(Path.Combine(scheme, Properties.Settings.Default.ContentFilePath)));
+            ContentDeploymentService.Instance.DeployContentAsync();
         }
 
         private void OnCancel()

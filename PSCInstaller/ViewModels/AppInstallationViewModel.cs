@@ -68,7 +68,7 @@ namespace PSCInstaller.ViewModels
             AppRegistrationService.Instance.ProgressEvent += AppInstallManager_OnProgressEvent;
             AppRegistrationService.Instance.CompletionEvent += AppInstallManager_CompletionEvent;
 
-            NextCommand = new RelayCommand<object>((e) => { OnNavigateToContentInstall(); });
+            NextCommand = new RelayCommand<object>((e) => { OnNavigateToContentPackageSelection(); });
             PreviousCommand = new RelayCommand<object>((e) => { OnNavigateToStart(); });
 
             await LoadPackageAsync();
@@ -82,10 +82,10 @@ namespace PSCInstaller.ViewModels
                 handler(this, EventArgs.Empty);
         }
 
-        public event EventHandler NavigateToContentInstall;
-        private void OnNavigateToContentInstall()
+        public event EventHandler NavigateToContentPackageSelection;
+        private void OnNavigateToContentPackageSelection()
         {
-            var handler = NavigateToContentInstall;
+            var handler = NavigateToContentPackageSelection;
             if (handler != null)
                 handler(this, EventArgs.Empty);      
         }
@@ -109,7 +109,7 @@ namespace PSCInstaller.ViewModels
                 string appxBundle = PSCInstaller.Properties.Settings.Default.AppBundleName;
                 
                 var dependencyAppXs = new List<string>();
-                foreach (var item in PSCInstaller.Properties.Settings.Default.RelativeDependencyPaths)
+                foreach (var item in PSCInstaller.Properties.Settings.Default.DependencyPaths)
 	            {
 		            dependencyAppXs.Add(item);
 	            }

@@ -64,14 +64,19 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BoolToNotBoolConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\CountToEnabledConverter.cs" />
     <Compile Include="Converters\ProgressToEnabledConverter.cs" />
     <Compile Include="Converters\ProgressToIndeterminantBoolConverter.cs" />
     <Compile Include="Sevices\ContentDeploymentService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ContentPackageSelectionViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
     <Compile Include="ViewModels\AppInstallationViewModel.cs" />
     <Compile Include="ViewModels\UnInstallViewModel.cs" />
     <Compile Include="ViewModels\ContentInstallationViewModel.cs" />
+    <Compile Include="Views\ContentPackageSelectionPage.xaml.cs">
+      <DependentUpon>ContentPackageSelectionPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
@@ -99,6 +104,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ContentPackageSelectionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -208,7 +217,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Images\Logo.scale-100.png">

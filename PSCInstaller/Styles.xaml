@@ -359,6 +359,7 @@
         <Setter Property="Background" Value="{StaticResource NavigationButtonDisabledBackground}"/>
         <Setter Property="BorderBrush" Value="{StaticResource NavigationButtonBackground}"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="SelectionMode" Value="Single"/>
     </Style>
 
     <!-- Data Templates -->
@@ -397,9 +398,32 @@
     </DataTemplate>
 
     <DataTemplate x:Key="CommonListViewItemTemplate">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Margin="10,0,0,0" Text="{Binding InstallationEventMessage}"/>
+        <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+            <TextBlock Text="{Binding InstallationEventMessage}"/>
         </StackPanel>
     </DataTemplate>
+
+
+    <DataTemplate x:Key="PackageSelectionListViewItemTemplate">
+        <Grid Margin="10,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock  Grid.Column="1" Style="{StaticResource Heading1}" Foreground="{StaticResource NavigationButtonBackground}" 
+                        Text="{Binding}"/>
+        </Grid>
+    </DataTemplate>
+
+    <Style x:Key="PackageSelectionListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Height" Value="75" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Opacity" Value="1.0" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
 </ResourceDictionary>

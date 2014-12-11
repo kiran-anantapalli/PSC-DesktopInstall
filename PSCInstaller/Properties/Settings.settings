@@ -8,7 +8,7 @@
     <Setting Name="AppBundleName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Pearson.PSC_1.4.3.0.appxbundle</Value>
     </Setting>
-    <Setting Name="RelativeDependencyPaths" Type="System.Collections.Specialized.StringCollection" Scope="User">
+    <Setting Name="DependencyPaths" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;Dependencies/x64/Microsoft.VCLibs.x64.120.00.appx&lt;/string&gt;
@@ -25,8 +25,12 @@
     <Setting Name="PackageName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Pearson.PSC</Value>
     </Setting>
-    <Setting Name="ContentFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Pearson\PSC\8-12win.zip</Value>
+    <Setting Name="ContentFilePaths" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;C:\Pearson\PSC\8-12win.zip&lt;/string&gt;
+  &lt;string&gt;Conent/8-12win2.zip&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

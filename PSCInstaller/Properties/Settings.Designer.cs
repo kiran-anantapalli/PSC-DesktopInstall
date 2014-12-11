@@ -55,12 +55,12 @@ namespace PSCInstaller.Properties {
   <string>Dependencies/x86/Microsoft.VCLibs.x86.120.00.appx</string>
   <string>Dependencies/ARM/Microsoft.VCLibs.ARM.120.00.appx</string>
 </ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection RelativeDependencyPaths {
+        public global::System.Collections.Specialized.StringCollection DependencyPaths {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["RelativeDependencyPaths"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["DependencyPaths"]));
             }
             set {
-                this["RelativeDependencyPaths"] = value;
+                this["DependencyPaths"] = value;
             }
         }
         
@@ -102,13 +102,17 @@ namespace PSCInstaller.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Pearson\\PSC\\8-12win.zip")]
-        public string ContentFilePath {
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>C:\Pearson\PSC\8-12win.zip</string>
+  <string>Conent/8-12win2.zip</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ContentFilePaths {
             get {
-                return ((string)(this["ContentFilePath"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["ContentFilePaths"]));
             }
             set {
-                this["ContentFilePath"] = value;
+                this["ContentFilePaths"] = value;
             }
         }
     }

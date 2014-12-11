@@ -26,6 +26,8 @@ namespace PSCInstaller.Sevices
         private long _transferedDirectorySize;
         private CancellationTokenSource _cancelSource;
 
+        public string ContentPackageFilePath { get; set; }
+
         #region Singleton
 
         public static readonly ContentDeploymentService Instance = new ContentDeploymentService();
@@ -36,10 +38,24 @@ namespace PSCInstaller.Sevices
 
         #endregion
 
-        public async Task DeployContentAsync(Uri contentPackageUri)
+        public async Task DeployContentAsync()
         {
+            Uri packageUri = null;
+            string scheme = @"file:///";
+            string workingDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
+            if (!Path.IsPathRooted(ContentDeploymentService.Instance.ContentPackageFilePath))
+            {
+                var absolutePath = Path.Combine(Path.Combine(scheme, workingDirectoryPath), ContentDeploymentService.Instance.ContentPackageFilePath);
+                packageUri = new Uri(absolutePath);
+            }
+            else
+            {
+                var absolutePath = Path.Combine(scheme, ContentDeploymentService.Instance.ContentPackageFilePath);
+                packageUri = new Uri(absolutePath);
+            }
+
             _cancelSource = new CancellationTokenSource();
-            var extractDirectory = await UnzipToTemporaryLocationAsync(contentPackageUri);
+            var extractDirectory = await UnzipToTemporaryLocationAsync(packageUri);
             await CopyToUserPackageInstallationDirectoryAsync(extractDirectory);
             await CleanupDirectoryAsync(extractDirectory);
             RaiseMessage("Installation Complete");

@@ -34,21 +34,21 @@ namespace PSCInstaller.Views
         void AppInstallationPage_Unloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NavigateToStart -= ViewModel_NavigateToStart;
-            ViewModel.NavigateToContentInstall -= ViewModel_NavigateToContentInstall;
+            ViewModel.NavigateToContentPackageSelection -= ViewModel_NavigateToContentPackageSelection;
             ViewModel.Dispose();
         }
 
         async void AppInstallationPage_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NavigateToStart += ViewModel_NavigateToStart;
-            ViewModel.NavigateToContentInstall += ViewModel_NavigateToContentInstall;
+            ViewModel.NavigateToContentPackageSelection += ViewModel_NavigateToContentPackageSelection;
             await ViewModel.Initialize();
         }
 
-        void ViewModel_NavigateToContentInstall(object sender, EventArgs e)
+        void ViewModel_NavigateToContentPackageSelection(object sender, EventArgs e)
         {
             var navService = NavigationService.GetNavigationService(this);
-            navService.Navigate(new Uri("Views/ContentInstallationPage.xaml", UriKind.Relative));  
+            navService.Navigate(new Uri("Views/ContentPackageSelectionPage.xaml", UriKind.Relative));  
         }
 
         void ViewModel_NavigateToStart(object sender, EventArgs e)

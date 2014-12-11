@@ -1,0 +1,37 @@
+﻿<Page x:Class="PSCInstaller.Views.PackageSelectionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vms="clr-namespace:PSCInstaller.ViewModels" 
+      xmlns:converters="clr-namespace:PSCInstaller.Converters" 
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance vms:ContentPackageSelectionViewModel, d:IsDesignTimeCreatable=True}"
+      d:DesignHeight="350" d:DesignWidth="525"
+	  Title="Content Package Selection">
+    <Page.Resources>
+        <converters:CountToEnabledConverter x:Key="countToEnabledConverter" />
+    </Page.Resources>
+    <Border Style="{StaticResource PageBaseStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
+            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Select Content Package" />
+
+            <ListView x:Name="packages" Grid.Row="1" SelectedIndex="{Binding CurrentPackageIndex}"
+                      Style="{StaticResource CommonListViewStyle}" 
+                      ItemsSource="{Binding Packages}" 
+                      ItemTemplate="{StaticResource PackageSelectionListViewItemTemplate}"
+                      ItemContainerStyle="{StaticResource PackageSelectionListViewItemContainerStyle}"></ListView>
+            
+            <Button Grid.Row="2" Content="Next" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                    Command="{Binding NextCommand}"
+                    Style="{StaticResource NavigationButtonStyle}"
+                    IsEnabled="{Binding ElementName=packages, Path=SelectedIndex, Converter={StaticResource countToEnabledConverter}}"/>
+        </Grid>
+    </Border>
+</Page>
