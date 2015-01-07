@@ -291,6 +291,7 @@ namespace PSCInstaller.Services
                     Windows.Management.Deployment.DeploymentResult deploymentResult = deploymentOperation.GetResults();
                     RaiseMessage(string.Format("Operation Error: {0}", deploymentOperation.ErrorCode));
                     RaiseMessage(string.Format("Detailed Error Text: {0}", deploymentResult.ErrorText)); //  0x800B0109
+                    Report(new DeploymentProgress() { percentage = 100 });
                 }
                 else if (deploymentOperation.Status == Windows.Foundation.AsyncStatus.Canceled)
                 {
