@@ -33,6 +33,7 @@ namespace PSCInstaller.Views
 
         void AppInstallationPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.VisualStateChange -= ViewModel_VisualStateChange;
             ViewModel.NavigateToStart -= ViewModel_NavigateToStart;
             ViewModel.NavigateToContentPackageSelection -= ViewModel_NavigateToContentPackageSelection;
             ViewModel.Dispose();
@@ -40,9 +41,18 @@ namespace PSCInstaller.Views
 
         async void AppInstallationPage_Loaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.VisualStateChange += ViewModel_VisualStateChange;
             ViewModel.NavigateToStart += ViewModel_NavigateToStart;
             ViewModel.NavigateToContentPackageSelection += ViewModel_NavigateToContentPackageSelection;
+
+            VisualStateManager.GoToState(mainGrid, AppInstallationViewModel.NormalVisualState, false);
+
             await ViewModel.Initialize();
+        }
+
+        void ViewModel_VisualStateChange(object sender, string visualState)
+        {
+            VisualStateManager.GoToElementState(mainGrid, visualState, false);
         }
 
         void ViewModel_NavigateToContentPackageSelection(object sender, EventArgs e)

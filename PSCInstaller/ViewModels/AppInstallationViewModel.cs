@@ -14,6 +14,9 @@ namespace PSCInstaller.ViewModels
 {
     public class AppInstallationViewModel : BaseViewModel
     {
+        public const string NormalVisualState = "Normal";
+        public const string InstallAppVisualState = "InstallApp";
+
         private ObservableCollection<EventMessageViewModel> _events;
         public ObservableCollection<EventMessageViewModel> Events
         {
@@ -35,6 +38,20 @@ namespace PSCInstaller.ViewModels
             set { SetProperty(ref _nextCommand, value); }
         }
 
+        private ICommand _skipApplicationinstallationCommand;
+        public ICommand SkipApplicationinstallationCommand
+        {
+            get { return _skipApplicationinstallationCommand; }
+            set { SetProperty(ref _skipApplicationinstallationCommand, value); }
+        }
+
+        private ICommand _installApplicationCommand;
+        public ICommand InstallApplicationCommand
+        {
+            get { return _installApplicationCommand; }
+            set { SetProperty(ref _installApplicationCommand, value); }
+        }   
+        
         private ICommand _prevCommand;
         public ICommand PreviousCommand
         {
@@ -49,7 +66,13 @@ namespace PSCInstaller.ViewModels
             set { SetProperty(ref _isInProgress, value); }
         }
 
-
+        public event EventHandler<string> VisualStateChange;
+        public void RaiseVisualStateChange(string visualState)
+        {
+            var handler = VisualStateChange;
+            if (handler != null)
+                handler(this, visualState);
+        }
         public AppInstallationViewModel()
         {
             Events = new ObservableCollection<EventMessageViewModel>();
@@ -68,10 +91,11 @@ namespace PSCInstaller.ViewModels
             AppRegistrationService.Instance.ProgressEvent += AppInstallManager_OnProgressEvent;
             AppRegistrationService.Instance.CompletionEvent += AppInstallManager_CompletionEvent;
 
+
+            SkipApplicationinstallationCommand = new RelayCommand<object>((e) => { OnNavigateToContentPackageSelection(); });
+            InstallApplicationCommand = new RelayCommand<object>((e) => { OnInstallApplication(); });
             NextCommand = new RelayCommand<object>((e) => { OnNavigateToContentPackageSelection(); });
             PreviousCommand = new RelayCommand<object>((e) => { OnNavigateToStart(); });
-
-            await LoadPackageAsync();
         }
 
         public event EventHandler NavigateToStart;
@@ -90,6 +114,11 @@ namespace PSCInstaller.ViewModels
                 handler(this, EventArgs.Empty);      
         }
 
+        private async void OnInstallApplication()
+        {
+            RaiseVisualStateChange(InstallAppVisualState);
+            await LoadPackageAsync();
+        }
 
         public override void Dispose()
         {

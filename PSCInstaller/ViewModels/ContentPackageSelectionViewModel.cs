@@ -27,6 +27,13 @@ namespace PSCInstaller.ViewModels
             set { SetProperty(ref _nextCommand, value); }
         }
 
+        private ICommand _previousCommand;
+        public ICommand PreviousCommand
+        {
+            get { return _previousCommand; }
+            set { SetProperty(ref _previousCommand, value); }
+        }
+        
         private int _currentPackageIndex;
         public int CurrentPackageIndex
         {
@@ -41,6 +48,9 @@ namespace PSCInstaller.ViewModels
 
         public override async Task Initialize()
         {
+
+            PreviousCommand = new RelayCommand<object>((e) => { OnNavigateToApplicationInstallation(); });
+
             NextCommand = new RelayCommand<object>((e) => { OnNavigateToContentInstall(); },
                                                    (e) => { return CurrentPackageIndex >= 0; });
 
@@ -49,6 +59,14 @@ namespace PSCInstaller.ViewModels
                 if (File.Exists(Properties.Settings.Default.ContentFilePaths[i]))
                     Packages.Add(Properties.Settings.Default.ContentFilePaths[i]);
             }
+        }
+
+        public event EventHandler NavigateToApplicationInstallation;
+        private void OnNavigateToApplicationInstallation()
+        {
+            var handler = NavigateToApplicationInstallation;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
         }
 
         public event EventHandler NavigateToContentInstall;
