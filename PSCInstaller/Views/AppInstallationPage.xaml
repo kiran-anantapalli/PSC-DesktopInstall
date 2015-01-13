@@ -43,7 +43,7 @@
                 <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
                 <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Application Installation" />
 
-                <TextBlock Grid.Row="1" Margin="10" Style="{StaticResource Heading2}" Text="Please make the following selection:" />
+                <TextBlock Grid.Row="1" Margin="10,10,10,0" VerticalAlignment="Center" Style="{StaticResource Heading2}" Text="Please select one of the following options." />
 
                 <Grid Grid.Row="2" Margin="10" Background="{StaticResource NavigationButtonDisabledBackground}">
                     <Grid.RowDefinitions>
