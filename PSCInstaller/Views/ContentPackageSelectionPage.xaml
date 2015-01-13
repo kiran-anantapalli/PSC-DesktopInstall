@@ -20,7 +20,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
-            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Select Content Package" />
+            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Select a Content Package" />
 
             <ListView x:Name="packages" Grid.Row="1" SelectedIndex="{Binding CurrentPackageIndex}"
                       Style="{StaticResource CommonListViewStyle}" 

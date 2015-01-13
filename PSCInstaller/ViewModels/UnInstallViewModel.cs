@@ -61,9 +61,11 @@ namespace PSCInstaller.ViewModels
 
             try
             {
-                var packageDatamodel = AppRegistrationService.Instance.FindPackage(  PSCInstaller.Properties.Settings.Default.PackageName);
+                //var packageDatamodel = AppRegistrationService.Instance.FindPackage(  PSCInstaller.Properties.Settings.Default.PackageName);
+                //await AppRegistrationService.Instance.RemovePackageAsync(packageDatamodel.AppPackageFullName);
 
-                await AppRegistrationService.Instance.RemovePackageAsync(packageDatamodel.AppPackageFullName);
+                await AppRegistrationService.Instance.RemovePackageAsync(PSCInstaller.Properties.Settings.Default.FullPackageName);
+
             }
             catch (Exception ex)
             {

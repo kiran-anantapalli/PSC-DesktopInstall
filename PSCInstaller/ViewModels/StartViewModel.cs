@@ -46,7 +46,7 @@ namespace PSCInstaller.ViewModels
         public override async System.Threading.Tasks.Task Initialize()
         {
             await Task.Yield();
-            IsPackageInstalled =  null != AppRegistrationService.Instance.FindPackage(Properties.Settings.Default.PackageName);
+            IsPackageInstalled = true;// null != AppRegistrationService.Instance.FindPackage(Properties.Settings.Default.PackageName);
         }
 
         public event EventHandler NavigateToUnInstall;

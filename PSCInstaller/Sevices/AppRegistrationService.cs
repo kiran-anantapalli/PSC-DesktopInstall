@@ -209,11 +209,13 @@ namespace PSCInstaller.Services
 
         public async Task RemovePackageAsync(string inputPackageName, string publisherId)
         {
-            var pkg = FindPackage(inputPackageName);
-            if (pkg != null)
-            {
-                await RemovePackageAsync(pkg.AppPackageFullName);
-            }
+            //var pkg = FindPackage(inputPackageName);
+            //if (pkg != null)
+            //{
+            //    await RemovePackageAsync(pkg.AppPackageFullName);
+            //}
+            await RemovePackageAsync(PSCInstaller.Properties.Settings.Default.FullPackageName);
+
         }
         public bool DoesDependencyPackageExist(string packageName, Windows.System.ProcessorArchitecture architecture)
         {
@@ -233,47 +235,47 @@ namespace PSCInstaller.Services
             return result = (installedPackage != null);
         }
 
-        public UserAppPackageDataModel FindPackage(string packageName)
-        {
-            UserAppPackageDataModel result = null;
-            try
-            {
-                var packages = _packageManager.FindPackages().ToList();
-                Windows.ApplicationModel.Package installedPackage = null;
-                foreach (var pkg in packages)
-                {
-                    if (string.Compare(pkg.Id.Name, packageName, true) == 0)
-                    {
-                        var fpkg = _packageManager.FindPackages(pkg.Id.Name, pkg.Id.Publisher).ToList();
-                        installedPackage = fpkg.FirstOrDefault();
-                        break;
-                    }
-                }
+        //public UserAppPackageDataModel FindPackage(string packageName)
+        //{
+        //    UserAppPackageDataModel result = null;
+        //    try
+        //    {
+        //        var packages = _packageManager.FindPackages().ToList();
+        //        Windows.ApplicationModel.Package installedPackage = null;
+        //        foreach (var pkg in packages)
+        //        {
+        //            if (string.Compare(pkg.Id.Name, packageName, true) == 0)
+        //            {
+        //                var fpkg = _packageManager.FindPackages(pkg.Id.Name, pkg.Id.Publisher).ToList();
+        //                installedPackage = fpkg.FirstOrDefault();
+        //                break;
+        //            }
+        //        }
  
-                if (installedPackage == null)
-                {
-                    RaiseMessage("No packages were found.");
-                }
-                else
-                {
-                    RaiseMessage("Package was found.");
-                    result = new UserAppPackageDataModel(installedPackage);
-                }
+        //        if (installedPackage == null)
+        //        {
+        //            RaiseMessage("No packages were found.");
+        //        }
+        //        else
+        //        {
+        //            RaiseMessage("Package was found.");
+        //            result = new UserAppPackageDataModel(installedPackage);
+        //        }
 
-            }
-            catch (UnauthorizedAccessException)
-            {
-                RaiseMessage("packageManager.FindPackages() failed because access was denied. This program must be run from an elevated command prompt.");
+        //    }
+        //    catch (UnauthorizedAccessException)
+        //    {
+        //        RaiseMessage("packageManager.FindPackages() failed because access was denied. This program must be run from an elevated command prompt.");
  
-            }
-            catch (Exception ex)
-            {
-                RaiseMessage(string.Format("packageManager.FindPackages() failed, error message: {0}", ex.Message));
-                RaiseMessage(string.Format("Full Stacktrace: {0}", ex.ToString()));
-            }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        RaiseMessage(string.Format("packageManager.FindPackages() failed, error message: {0}", ex.Message));
+        //        RaiseMessage(string.Format("Full Stacktrace: {0}", ex.ToString()));
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         private void HandleDeploymentOperation(Windows.Foundation.IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> deploymentOperation)
         {
