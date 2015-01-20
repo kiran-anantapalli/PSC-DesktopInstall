@@ -91,7 +91,6 @@ namespace PSCInstaller.ViewModels
             AppRegistrationService.Instance.ProgressEvent += AppInstallManager_OnProgressEvent;
             AppRegistrationService.Instance.CompletionEvent += AppInstallManager_CompletionEvent;
 
-
             SkipApplicationinstallationCommand = new RelayCommand<object>((e) => { OnNavigateToContentPackageSelection(); });
             InstallApplicationCommand = new RelayCommand<object>((e) => { OnInstallApplication(); });
             NextCommand = new RelayCommand<object>((e) => { OnNavigateToContentPackageSelection(); });

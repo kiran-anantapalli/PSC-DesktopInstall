@@ -11,59 +11,21 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height=".3*"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         
         <Viewbox Margin="60" VerticalAlignment="Center">
             <Path Fill="White" Data="{StaticResource PearsonLogoGeometry}"/>
         </Viewbox>
+       
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Vertical">
+            <Button x:Name="InstallButton" Grid.Column="0" Width="250" Height="80" 
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateToInstallationCommand}">Install</Button>
 
-        <TextBlock Grid.Row="1" HorizontalAlignment="Center"
-                   Style="{StaticResource Heading1}" 
-                   Foreground="{StaticResource ContrastForeground}"
-                   Text="Welcome to the installer for Pearson System of Courses" TextWrapping="Wrap"/>
-        
-        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal">
-            <StackPanel Margin="0,0,5,0">
-                <StackPanel>
-                    <TextBlock TextAlignment="Center"
-                               Style="{StaticResource Heading2}"
-                               Foreground="{StaticResource ContrastForeground}">Install</TextBlock>
-                    <Button x:Name="InstallButton" Grid.Column="0" Width="80" Height="80" 
-                        ContentTemplate="{StaticResource InstallIcon}"
-                        Style="{StaticResource StartPageButtonStyle}"
-                        Command="{Binding NavigateToInstallationCommand}">
-                    </Button>
-                </StackPanel>
-                <Rectangle Height="50" Width="80" RenderTransformOrigin=".5 .5"
-                	RenderTransform="{StaticResource VerticalFlipTransformGroup}" 
-                	OpacityMask="{StaticResource VerticalTransparentGradient}">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{Binding ElementName=InstallButton}"/>
-                    </Rectangle.Fill>
-                </Rectangle>
-            </StackPanel>
-            
-            <StackPanel Margin="0,0,0,0">
-                <StackPanel>
-                    <TextBlock TextAlignment="Center"
-                               Style="{StaticResource Heading2}"
-                               Foreground="{StaticResource ContrastForeground}">Uninstall</TextBlock>
-                    <Button  x:Name="UninstallButton" Grid.Column="1" Width="80" Height="80" 
-                        ContentTemplate="{StaticResource UninstallIcon}"
-                        Style="{StaticResource StartPageButtonStyle}" 
-                        Command="{Binding NavigateToUnInstallCommand}">
-                    </Button>
-                </StackPanel>
-                <Rectangle Height="50" Width="80" RenderTransformOrigin=".5 .5"
-                           RenderTransform="{StaticResource VerticalFlipTransformGroup}"
-                           OpacityMask="{StaticResource VerticalTransparentGradient}">
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{Binding ElementName=UninstallButton}"></VisualBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-            </StackPanel>
+            <Button  x:Name="UninstallButton" Grid.Column="1" Width="250" Height="80" 
+                        Style="{StaticResource NavigationButtonStyle}" 
+                        Command="{Binding NavigateToUnInstallCommand}">Uninstall</Button>
         </StackPanel>
     </Grid>
 </Page>

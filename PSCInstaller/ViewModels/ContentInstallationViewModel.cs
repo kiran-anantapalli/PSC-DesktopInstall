@@ -3,6 +3,7 @@ using PSCInstaller.Sevices;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,20 @@ namespace PSCInstaller.ViewModels
             set { SetProperty(ref _message, value); }
         }
 
+        private string _estimatedTimeRemaining;
+        public string EstimatedTimeRemaining
+        {
+            get { return _estimatedTimeRemaining; }
+            set { SetProperty(ref _estimatedTimeRemaining, value); }
+        }
+
+        private string _contentFileName;
+        public string ContentFileName
+        {
+            get { return _contentFileName; }
+            set { SetProperty(ref _contentFileName, value); }
+        }
+
         private int _progress;
         public int Progress
         {
@@ -48,7 +63,30 @@ namespace PSCInstaller.ViewModels
             get { return _cancelCommand; }
             set { SetProperty(ref _cancelCommand, value); }
         }
-        
+
+
+        private DateTime _startOfInstallation;
+
+        private object lastProgresUpdateLock = new object();
+        private DateTime? _lastProgressUpdate;
+        public DateTime? LastProgressUpdate
+        {
+            get
+            {
+                lock (lastProgresUpdateLock)
+                {
+                    return _lastProgressUpdate;
+                }
+            }
+            private set 
+            {
+                lock (lastProgresUpdateLock)
+                {
+                    _lastProgressUpdate = value;
+                }
+            }
+        }
+
         public ContentInstallationViewModel()
         {
             Events = new ObservableCollection<EventMessageViewModel>();
@@ -63,20 +101,31 @@ namespace PSCInstaller.ViewModels
 
         public override async Task Initialize()
         {
-            NextCommand = new RelayCommand<object>((e) => { OnNavigateToStart(); });
+            NextCommand = new RelayCommand<object>((e) => { OnNext(); });
             CancelCommand = new RelayCommand<object>((e) => { OnCancel(); });
 
             ContentDeploymentService.Instance.ProgressEvent += Instance_ProgressEvent;
             ContentDeploymentService.Instance.MessagingEvent += Instance_MessagingEvent;
             ContentDeploymentService.Instance.FileUpdateEvent += Instance_FileUpdateEvent;
 
+            _startOfInstallation = DateTime.Now;
             ContentDeploymentService.Instance.DeployContentAsync();
+
+            ContentFileName = Path.GetFileName(ContentDeploymentService.Instance.ContentPackageFilePath);
+        }
+
+        public event EventHandler NavigateToStart;
+        private void OnNext()
+        {
+            var handler = NavigateToStart;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
         }
 
         private void OnCancel()
         {
             if( ContentDeploymentService.Instance.CancelDeployment() )
-                OnNavigateToStart();
+                OnNavigateToContentPackageSelection();
         }
 
         public override void Dispose()
@@ -100,25 +149,31 @@ namespace PSCInstaller.ViewModels
 
         void Instance_ProgressEvent(object sender, Services.ProgressUpdateEventArgs e)
         {
+            var now = DateTime.Now;
             UpdateUIThreadSafe(() =>
             {
                 Progress = (int)e.Progress.percentage;
+
+                // Only update every 10seconds
+                if (!_lastProgressUpdate.HasValue || now.Subtract(_lastProgressUpdate.Value).TotalSeconds >= 10)
+                {
+                    _lastProgressUpdate = now;
+
+                    var elapsedTime = now.Subtract(_startOfInstallation);
+                    var remainingPercentage = e.Progress.percentage == 0 ? 100 : ((double)100 / (double)e.Progress.percentage) - 1.0;
+                    var estimatedTime = TimeSpan.FromSeconds(elapsedTime.TotalSeconds * remainingPercentage);
+                    EstimatedTimeRemaining = "Est. Time of Completion: " + now.Add(estimatedTime).ToShortTimeString();
+                }
             });
         }
 
         void Instance_FileUpdateEvent(object sender, Services.FileProgressUpdateEventArgs e)
         {
             string message = string.Empty;
-            if (e.Subject == DeploymentSubject.Unpacking)
-            {
-                message = string.Format("Step 1 of 2: {0} {1} of {2} files.", e.Subject.ToString(), e.CurrentValue, e.TotalValue);
-            }
-            else if (e.Subject == DeploymentSubject.Installing)
-            {
-                message = string.Format("Step 2 of 2: {0} {1:f2}% complete.", e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
-            }
-            else
-                throw new ArgumentException(string.Format("{0} was unexpected", e.Subject));
+            int stepNumber = 1;
+            if (e.Subject == DeploymentSubject.Installing)
+                stepNumber = 2;
+            message = string.Format("Step {0} of 2: {1} ({2:f0}%).",stepNumber, e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
 
             UpdateUIThreadSafe(() =>
             {
@@ -126,10 +181,10 @@ namespace PSCInstaller.ViewModels
             });
         }
         
-        public event EventHandler NavigateToStart;
-        private void OnNavigateToStart()
+        public event EventHandler NavigateToContentPackageSelection;
+        private void OnNavigateToContentPackageSelection()
         {
-            var handler = NavigateToStart;
+            var handler = NavigateToContentPackageSelection;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }

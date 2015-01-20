@@ -65,8 +65,10 @@
     <Compile Include="Converters\BoolToNotBoolConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\CountToEnabledConverter.cs" />
+    <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\ProgressToEnabledConverter.cs" />
     <Compile Include="Converters\ProgressToIndeterminantBoolConverter.cs" />
+    <Compile Include="Converters\VisibileUntilIntToVisibilityConverter.cs" />
     <Compile Include="Sevices\ContentDeploymentService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ContentPackageSelectionViewModel.cs" />

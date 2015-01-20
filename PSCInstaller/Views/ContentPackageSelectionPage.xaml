@@ -28,14 +28,17 @@
                       ItemTemplate="{StaticResource PackageSelectionListViewItemTemplate}"
                       ItemContainerStyle="{StaticResource PackageSelectionListViewItemContainerStyle}"></ListView>
 
-            <Button Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Previous" Width="100"
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button  VerticalAlignment="Bottom" Margin="0 0 5 0" HorizontalAlignment="Left" Content="Previous" Width="100"
                     Command="{Binding PreviousCommand}" 
                     Style="{StaticResource NavigationButtonStyle}"/>
-            
-            <Button Grid.Row="2" Content="Next" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+
+                <Button Content="Next" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                     Command="{Binding NextCommand}"
                     Style="{StaticResource NavigationButtonStyle}"
                     IsEnabled="{Binding ElementName=packages, Path=SelectedIndex, Converter={StaticResource countToEnabledConverter}}"/>
+            </StackPanel>
+
         </Grid>
     </Border>
 </Page>

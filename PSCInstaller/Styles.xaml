@@ -220,7 +220,7 @@
                 </Style>
             </Setter.Value>
         </Setter>
-        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="#FF707070"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -303,23 +303,23 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ProgressBar}">
-                    <Grid>
+                    <Grid MinHeight="14" MinWidth="100">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Determinate" >
+                                </VisualState>
+                                <VisualState x:Name="Indeterminate">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Duration="00:00:00"
-                                                 Storyboard.TargetName="PART_GlowRect"
-                                                 Storyboard.TargetProperty="Fill">
-                                            <DiscreteObjectKeyFrame KeyTime="00:00:00" >
+                                                 Storyboard.TargetName="PART_Indicator"
+                                                 Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                                 <DiscreteObjectKeyFrame.Value>
-                                                    <SolidColorBrush>Transparent</SolidColorBrush>
+                                                    <SolidColorBrush>White</SolidColorBrush>
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Indeterminate">
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
@@ -333,14 +333,13 @@
                         <Border x:Name="PART_Indicator"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Foreground}" 
-                                BorderBrush="Transparent"
                                 HorizontalAlignment="Left">
 
-                            <Grid x:Name="Animation">
+                            <Grid x:Name="Animation" ClipToBounds="True">
                                 <Rectangle x:Name="PART_GlowRect"
                                         Width="100"
                                         HorizontalAlignment="Left"
-                                        Fill="{StaticResource ContrastForeground}"
+                                        Fill="{TemplateBinding Foreground}" 
                                         Margin="-100,0,0,0" />
                             </Grid>
                         </Border>

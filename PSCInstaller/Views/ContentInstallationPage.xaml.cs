@@ -33,12 +33,14 @@ namespace PSCInstaller.Views
 
         void ContentInstallationPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.NavigateToContentPackageSelection -= ViewModel_NavigateToContentSelection;
             ViewModel.NavigateToStart -= ViewModel_NavigateToStart;
             ViewModel.Dispose();
         }
 
         async void ContentInstallationPage_Loaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.NavigateToContentPackageSelection += ViewModel_NavigateToContentSelection;
             ViewModel.NavigateToStart += ViewModel_NavigateToStart;
             await ViewModel.Initialize();
         }
@@ -47,6 +49,12 @@ namespace PSCInstaller.Views
         {
             var navService = NavigationService.GetNavigationService(this);
             navService.Navigate(new Uri("Views/StartPage.xaml", UriKind.Relative));
+        }
+
+        void ViewModel_NavigateToContentSelection(object sender, EventArgs e)
+        {
+            var navService = NavigationService.GetNavigationService(this);
+            navService.Navigate(new Uri("Views/ContentPackageSelectionPage.xaml", UriKind.Relative));
         }
     }
 }
