@@ -179,7 +179,8 @@ namespace PSCInstaller.ViewModels
                     var elapsedTime = now.Subtract(_startOfInstallation);
                     var remainingPercentage = e.Progress.percentage == 0 ? 100 : ((double)100 / (double)e.Progress.percentage) - 1.0;
                     var estimatedTime = TimeSpan.FromSeconds(elapsedTime.TotalSeconds * remainingPercentage);
-                    EstimatedTimeRemainingMessage = "Complete by: " + now.Add(estimatedTime).ToShortTimeString();
+                    //EstimatedTimeRemainingMessage = "Complete by: " + now.Add(estimatedTime).ToShortTimeString();
+                    EstimatedTimeRemainingMessage = ((int)estimatedTime.TotalMinutes) + " minutes remaining";
                 }
             });
         }
