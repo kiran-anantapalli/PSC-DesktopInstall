@@ -132,6 +132,8 @@ namespace PSCInstaller.ViewModels
             var handler = NavigateToStart;
             if (handler != null)
                 handler(this, EventArgs.Empty);
+
+            App.Current.Shutdown();
         }
 
         private void OnCancel()
@@ -180,7 +182,11 @@ namespace PSCInstaller.ViewModels
                     var remainingPercentage = e.Progress.percentage == 0 ? 100 : ((double)100 / (double)e.Progress.percentage) - 1.0;
                     var estimatedTime = TimeSpan.FromSeconds(elapsedTime.TotalSeconds * remainingPercentage);
                     //EstimatedTimeRemainingMessage = "Complete by: " + now.Add(estimatedTime).ToShortTimeString();
-                    EstimatedTimeRemainingMessage = ((int)estimatedTime.TotalMinutes) + " minutes remaining";
+
+                    if (((int)estimatedTime.TotalMinutes) > 0)
+                        EstimatedTimeRemainingMessage = ((int)estimatedTime.TotalMinutes) + " minutes remaining";
+                    else
+                        EstimatedTimeRemainingMessage = " Less than 1 minute remaining";
                 }
             });
         }
