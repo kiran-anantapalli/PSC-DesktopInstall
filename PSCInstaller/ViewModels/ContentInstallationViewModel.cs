@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
+using Windows.System;
+using Windows.Storage;
+using Windows.Foundation;
 namespace PSCInstaller.ViewModels
 {
     public class ContentInstallationViewModel : BaseViewModel
@@ -29,8 +31,15 @@ namespace PSCInstaller.ViewModels
             set { SetProperty(ref _message, value); }
         }
 
+        private string _messagePrefix;
+        public string MessagePrefix
+        {
+            get { return _messagePrefix; }
+            set { SetProperty(ref _messagePrefix, value); }
+        }
+
         private string _estimatedTimeRemaining;
-        public string EstimatedTimeRemaining
+        public string EstimatedTimeRemainingMessage
         {
             get { return _estimatedTimeRemaining; }
             set { SetProperty(ref _estimatedTimeRemaining, value); }
@@ -115,8 +124,11 @@ namespace PSCInstaller.ViewModels
         }
 
         public event EventHandler NavigateToStart;
-        private void OnNext()
+        private async void OnNext()
         {
+            var fullFilePath = System.IO.Path.GetFullPath("launcher.ccsoc");
+            System.Diagnostics.Process.Start(fullFilePath);
+
             var handler = NavigateToStart;
             if (handler != null)
                 handler(this, EventArgs.Empty);
@@ -154,15 +166,20 @@ namespace PSCInstaller.ViewModels
             {
                 Progress = (int)e.Progress.percentage;
 
-                // Only update every 10seconds
-                if (!_lastProgressUpdate.HasValue || now.Subtract(_lastProgressUpdate.Value).TotalSeconds >= 10)
+                if (!_lastProgressUpdate.HasValue)
                 {
                     _lastProgressUpdate = now;
+                    return;
+                }
 
+                // Only update every 10seconds
+                if (now.Subtract(_lastProgressUpdate.Value).TotalSeconds >= 10)
+                {
+                    _lastProgressUpdate = now;
                     var elapsedTime = now.Subtract(_startOfInstallation);
                     var remainingPercentage = e.Progress.percentage == 0 ? 100 : ((double)100 / (double)e.Progress.percentage) - 1.0;
                     var estimatedTime = TimeSpan.FromSeconds(elapsedTime.TotalSeconds * remainingPercentage);
-                    EstimatedTimeRemaining = "Est. Time of Completion: " + now.Add(estimatedTime).ToShortTimeString();
+                    EstimatedTimeRemainingMessage = "Complete by: " + now.Add(estimatedTime).ToShortTimeString();
                 }
             });
         }
@@ -170,14 +187,17 @@ namespace PSCInstaller.ViewModels
         void Instance_FileUpdateEvent(object sender, Services.FileProgressUpdateEventArgs e)
         {
             string message = string.Empty;
+            string messagePrefix = string.Empty;
             int stepNumber = 1;
             if (e.Subject == DeploymentSubject.Installing)
                 stepNumber = 2;
-            message = string.Format("Step {0} of 2: {1} ({2:f0}%).",stepNumber, e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
+            messagePrefix = string.Format("Step {0} of 2:", stepNumber);
+            message = string.Format("{0} ({1:f0}%)",e.Subject.ToString(), ((double)e.CurrentValue / (double)e.TotalValue) * 100.0);
 
             UpdateUIThreadSafe(() =>
             {
                 Message = message;
+                MessagePrefix = messagePrefix;
             });
         }
         

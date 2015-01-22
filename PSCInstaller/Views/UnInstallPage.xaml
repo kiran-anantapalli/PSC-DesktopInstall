@@ -7,39 +7,64 @@
       xmlns:converters="clr-namespace:PSCInstaller.Converters" 
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance vms:UnInstallViewModel, d:IsDesignTimeCreatable=True}"
-      d:DesignHeight="350" d:DesignWidth="525"
-	Title="UnInstall">
+      d:DesignHeight="610" d:DesignWidth="740"
+      	Title="UnInstall">
     <Page.Resources>
         <converters:ProgressToEnabledConverter x:Key="progressToEnabledConverter" />
         <converters:ProgressToIndeterminantBoolConverter x:Key="progressToIndeterminantBoolConverter"/>
         <converters:IntToVisibilityConverter VisibleValue="100" x:Key="intToVisibilityConverter" />
+        <converters:VisibileUntilIntToVisibilityConverter Threshhold="90" x:Key="visibileUntilIntToVisibilityConverter"/>
     </Page.Resources>
     
     <Border Style="{StaticResource PageBaseStyle}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="86"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
-            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Uninstalling Application" />
-
-            <ProgressBar x:Name="progress" Grid.Row="1" Value="{Binding Progress}" Style="{StaticResource ProgressBarStyle}"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <Rectangle Grid.Row="0" Grid.ColumnSpan="2" Fill="{StaticResource MainThemeBackgroundBrush}"/>
+            <Viewbox Margin="25 0 0 0"  Width="226" Height="37" VerticalAlignment="Center">
+                <Path Fill="{StaticResource PearsonWhiteBrush}" Data="{StaticResource PearsonLogoGeometry}"/>
+            </Viewbox>
+           
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="25 60 25 25" 
+                        Visibility="{Binding Progress, Converter={StaticResource visibileUntilIntToVisibilityConverter}}">
+                <TextBlock Style="{StaticResource TopBarHeaderTextStyle}" Margin="0 0 0 30">Uninstalling</TextBlock>
+                <ProgressBar x:Name="progress" Value="{Binding Progress}" Style="{StaticResource ProgressBarStyle}"
                      IsIndeterminate="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToIndeterminantBoolConverter}}"/>
+            </StackPanel>
+
+            <!-- Completion Panel-->
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0 45 0 0"
+                        Visibility="{Binding Progress, Converter={StaticResource intToVisibilityConverter}}"
+                            Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <ContentControl Margin="0 0 16 0" VerticalAlignment="Top" ContentTemplate="{StaticResource CheckMark}"/>
+                <TextBlock  VerticalAlignment="Center"  Style="{StaticResource TopBarHeaderTextStyle}">Uninstall Complete</TextBlock>
+            </StackPanel>
+            
+
+            <!--<ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
+            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Uninstalling Application" />
 
             <ListView Grid.Row="2" Visibility="Collapsed" Style="{StaticResource CommonListViewStyle}" ItemsSource="{Binding Events}" ItemTemplate="{StaticResource CommonListViewItemTemplate}" />
 
             <Grid Grid.Row="2" Visibility="{Binding Progress, Mode=TwoWay, Converter={StaticResource intToVisibilityConverter}}">
                 <TextBlock Style="{StaticResource Heading1}" VerticalAlignment="Center" HorizontalAlignment="Center">Uninstall Complete</TextBlock>
             </Grid>
-            <Button Grid.Row="3" Content="Done" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                    Command="{Binding NextCommand}"
-                    Style="{StaticResource NavigationButtonStyle}" Background="{StaticResource PearsonBackground}"
-                    IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
+-->
 
+            <Button x:Name="DoneButton" Grid.Row="3" Grid.Column="1" Margin="25" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                    Command="{Binding NextCommand}" 
+                    Style="{StaticResource NavigationButtonStyle}"
+                    IsEnabled="{Binding ElementName=progress, Path=Value, Converter={StaticResource progressToEnabledConverter}}">
+                <TextBlock>Done</TextBlock>
+            </Button>
         </Grid>
     </Border>
 </Page>

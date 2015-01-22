@@ -7,7 +7,7 @@
       xmlns:converters="clr-namespace:PSCInstaller.Converters" 
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance vms:ContentPackageSelectionViewModel, d:IsDesignTimeCreatable=True}"
-      d:DesignHeight="350" d:DesignWidth="525"
+      d:DesignHeight="610" d:DesignWidth="740"
 	  Title="Content Package Selection">
     <Page.Resources>
         <converters:CountToEnabledConverter x:Key="countToEnabledConverter" />
@@ -15,28 +15,63 @@
     <Border Style="{StaticResource PageBaseStyle}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="86"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
-            <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Select a Content Package" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-            <ListView x:Name="packages" Grid.Row="1" SelectedIndex="{Binding CurrentPackageIndex}"
-                      Style="{StaticResource CommonListViewStyle}" 
-                      ItemsSource="{Binding Packages}" 
-                      ItemTemplate="{StaticResource PackageSelectionListViewItemTemplate}"
-                      ItemContainerStyle="{StaticResource PackageSelectionListViewItemContainerStyle}"></ListView>
+            <!-- Header/Banner -->
+            <Rectangle Grid.Row="0" Grid.ColumnSpan="2" Fill="{StaticResource MainThemeBackgroundBrush}"/>
+            <Viewbox Margin="25 0 0 0"  Width="226" Height="37" VerticalAlignment="Center">
+                <Path Fill="{StaticResource PearsonWhiteBrush}" Data="{StaticResource PearsonLogoGeometry}"/>
+            </Viewbox>
 
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button  VerticalAlignment="Bottom" Margin="0 0 5 0" HorizontalAlignment="Left" Content="Previous" Width="100"
-                    Command="{Binding PreviousCommand}" 
-                    Style="{StaticResource NavigationButtonStyle}"/>
+            <!-- Top Bar Nav Bar -->
+            <StackPanel  x:Name="parent"  Grid.Row="0" Grid.Column="1" Margin="25 0 0 0" Orientation="Horizontal">
+                <Grid Background="{StaticResource PearsonGrayBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0">
+                    <StackPanel Margin="29 14 29 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">1</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Install App</TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{StaticResource PearsonWhiteBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0" >
+                    <StackPanel Margin="0 14 0 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">2</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Install Content</TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{StaticResource PearsonGrayBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0" >
+                    <StackPanel Margin="0 14 0 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">3</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Launch</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
 
-                <Button Content="Next" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                    Command="{Binding NextCommand}"
-                    Style="{StaticResource NavigationButtonStyle}"
-                    IsEnabled="{Binding ElementName=packages, Path=SelectedIndex, Converter={StaticResource countToEnabledConverter}}"/>
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="25 60 25 25">
+                <TextBlock Style="{StaticResource TopBarHeaderTextStyle}" Margin="0 0 0 45">Select Content Package</TextBlock>
+
+                <ListView x:Name="packages"  HorizontalAlignment="Center"
+                          SelectedIndex="{Binding CurrentPackageIndex, Mode=TwoWay}"
+                          Style="{StaticResource CommonListViewStyle}" 
+                          ItemsSource="{Binding Packages}" 
+                          ItemTemplate="{StaticResource PackageSelectionListViewItemTemplate}"
+                          ItemContainerStyle="{StaticResource PackageSelectionListViewItemContainerStyle}"></ListView>        
+            </StackPanel>
+
+
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="25">
+                <Button Margin="0 0 25 0" Command="{Binding PreviousCommand}" Style="{StaticResource NavigationButtonStyle}">
+                    <TextBlock>Previous</TextBlock>
+                </Button>
+
+                <Button Command="{Binding NextCommand}" Style="{StaticResource NavigationButtonStyle}" IsEnabled="{Binding ElementName=packages, Path=SelectedIndex, Converter={StaticResource countToEnabledConverter}}">
+                    <TextBlock>Next</TextBlock>
+                </Button>
             </StackPanel>
 
         </Grid>

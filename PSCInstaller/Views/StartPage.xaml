@@ -5,27 +5,38 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:vms="clr-namespace:PSCInstaller.ViewModels" 
       mc:Ignorable="d" 
-      d:DesignHeight="350" d:DesignWidth="525"
+      d:DesignHeight="610" d:DesignWidth="740"
       d:DataContext="{d:DesignInstance vms:StartViewModel, d:IsDesignTimeCreatable=True}"
       Title="Start">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         
-        <Viewbox Margin="60" VerticalAlignment="Center">
-            <Path Fill="White" Data="{StaticResource PearsonLogoGeometry}"/>
+        <Viewbox Margin="0 115 0 44"  Width="454" Height="72" HorizontalAlignment="Center">
+            <Path Fill="{StaticResource PearsonWhiteBrush}" Data="{StaticResource PearsonLogoGeometry}"/>
         </Viewbox>
-       
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Vertical">
-            <Button x:Name="InstallButton" Grid.Column="0" Width="250" Height="80" 
-                        Style="{StaticResource NavigationButtonStyle}"
-                        Command="{Binding NavigateToInstallationCommand}">Install</Button>
 
-            <Button  x:Name="UninstallButton" Grid.Column="1" Width="250" Height="80" 
-                        Style="{StaticResource NavigationButtonStyle}" 
-                        Command="{Binding NavigateToUnInstallCommand}">Uninstall</Button>
+        <TextBlock Grid.Row="1" Margin="0 0 0 44" Foreground="{StaticResource PearsonWhiteBrush}" FontFamily="{StaticResource CommonFontFamily}" FontSize="{StaticResource CommonFontSize}" HorizontalAlignment="Center">Welcome to the Installer for Pearson System of Courses</TextBlock>
+        <StackPanel Grid.Row="2" Margin="0 0 0 120" HorizontalAlignment="Center" Orientation="Horizontal">
+            <Button x:Name="InstallButton" Width="173" Height="173" Margin="0 0 22 0"
+                    Foreground="{StaticResource GreenForeground}"
+                    BorderBrush="{StaticResource MainThemeBackgroundBorderBrush}"
+                    ContentTemplate="{StaticResource InstallIcon}"
+                    Style="{StaticResource StartPageInstallButtonStyle}" 
+                    Command="{Binding NavigateToInstallationCommand}">
+            </Button>
+
+            <Button x:Name="UninstallButton" Width="173" Height="173" Margin="21 0 0 0"
+                    Foreground="{StaticResource RedForeground}"
+                    BorderBrush="{StaticResource MainThemeBackgroundBorderBrush}"
+                    ContentTemplate="{StaticResource UninstallIcon}"
+                    Style="{StaticResource StartPageUnInstallButtonStyle}" 
+                    Command="{Binding NavigateToUnInstallCommand}">
+            </Button>
+
         </StackPanel>
     </Grid>
 </Page>

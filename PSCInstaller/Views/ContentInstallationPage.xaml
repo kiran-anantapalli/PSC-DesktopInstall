@@ -7,64 +7,134 @@
       xmlns:converters="clr-namespace:PSCInstaller.Converters" 
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance vms:ContentInstallationViewModel, d:IsDesignTimeCreatable=True}"
-      d:DesignHeight="350" d:DesignWidth="525"
+      d:DesignHeight="610" d:DesignWidth="740"
 	  Title="Content Installation">
     <Page.Resources>
         <converters:ProgressToEnabledConverter x:Key="progressToEnabledConverter" />
         <converters:BoolToNotBoolConverter x:Key="boolToNotBoolConverter" />
         <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter" />
         <converters:IntToVisibilityConverter VisibleValue="100" x:Key="intToVisibilityConverter" />
+        <converters:VisibileUntilIntToVisibilityConverter Threshhold="100" x:Key="visibileUntilIntToVisibilityConverter" />
         
     </Page.Resources>
     <Border Style="{StaticResource PageBaseStyle}">
         <Grid>
-            <Grid x:Name="InstallingGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-            
-                <ContentControl HorizontalAlignment="Left" Style="{StaticResource PearsonControlControlStyle}"/>
-                <TextBlock Grid.Row="0" Style="{StaticResource Title}" Text="Installing Content" TextWrapping="Wrap"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="86"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="1" VerticalAlignment="Center" >
-                    <ProgressBar x:Name="progress" Grid.Row="1" Style="{StaticResource ProgressBarStyle}" Value="{Binding Progress}"/>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding Message}"></TextBlock>
-                        <TextBlock Margin="10 0 0 0" Style="{StaticResource Heading2}" Text="{Binding EstimatedTimeRemaining}"></TextBlock>
+            <!-- Header/Banner -->
+            <Rectangle Grid.Row="0" Grid.ColumnSpan="2" Fill="{StaticResource MainThemeBackgroundBrush}"/>
+            <Viewbox Margin="25 0 0 0"  Width="226" Height="37" VerticalAlignment="Center">
+                <Path Fill="{StaticResource PearsonWhiteBrush}" Data="{StaticResource PearsonLogoGeometry}"/>
+            </Viewbox>
+
+            <!-- Top Bar Nav Bar -->
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="25 0 0 0" Orientation="Horizontal">
+                <Grid Background="{StaticResource PearsonGrayBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0">
+                    <StackPanel Margin="29 14 29 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">1</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Install App</TextBlock>
                     </StackPanel>
-                    
-                </StackPanel>
+                </Grid>
+                <Grid Background="{StaticResource PearsonWhiteBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0" >
+                    <StackPanel Margin="0 14 0 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">2</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Install Content</TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{StaticResource PearsonGrayBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0" >
+                    <StackPanel Margin="0 14 0 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">3</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Launch</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
 
-                <TextBlock Grid.Row="2" Style="{StaticResource Heading2}">
-                    <Run xml:space="preserve">Installing Content for </Run>
-                    <Run Text="{Binding ContentFileName}"></Run>
-                </TextBlock>
+            <!-- launch selection top bar, revealed when completed-->
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="25 0 0 0" Orientation="Horizontal"
+                        Visibility="{Binding Progress, Converter={StaticResource intToVisibilityConverter}}">
+                <Grid Background="{StaticResource PearsonGrayBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0">
+                    <StackPanel Margin="29 14 29 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">1</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Install App</TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{StaticResource PearsonGrayBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0" >
+                    <StackPanel Margin="0 14 0 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">2</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Install Content</TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{StaticResource PearsonWhiteBrush}" Width="144" Height="71" VerticalAlignment="Bottom" Margin="0 0 1 0" >
+                    <StackPanel Margin="0 14 0 0" >
+                        <TextBlock Style="{StaticResource TopBarHeaderTextStyle}">3</TextBlock>
+                        <TextBlock Style="{StaticResource TopBarSubheadingTextStyle}">Launch</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            
+            <Grid  x:Name="InstallingGrid" Grid.Row="1" Grid.ColumnSpan="2" Margin="25 60 25 25"
+                  Visibility="{Binding Progress, Converter={StaticResource visibileUntilIntToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 
-                <ListView Visibility="Collapsed" Grid.Row="2" Style="{StaticResource CommonListViewStyle}" ItemsSource="{Binding Events}" ItemTemplate="{StaticResource CommonListViewItemTemplate}" />
 
-                <Button Grid.Row="3" HorizontalAlignment="Right" Content="Cancel" Width="100"
+                <StackPanel Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock Margin="0 0 0 30" Style="{StaticResource TopBarHeaderTextStyle}">Installing Content</TextBlock>
+                    <TextBlock Margin="0 0 0 30" Style="{StaticResource TopBarHeaderTextStyle}" Foreground="{StaticResource MainThemeBackgroundBrush}">
+                        <Run xml:space="preserve">Pearson System of Courses </Run>
+                        <Run Text="{Binding ContentFileName}"></Run>
+                    </TextBlock>
+                    
+                    <ProgressBar x:Name="progress" Margin="0 0 0 12" Style="{StaticResource ProgressBarStyle}" Value="{Binding Progress}"/>
+                    
+                    <TextBlock HorizontalAlignment="Center" Style="{StaticResource Heading2}">
+                        <Run FontWeight="Bold" Text="{Binding MessagePrefix}"></Run>
+                        <Run Text="{Binding Message}"></Run>
+                    </TextBlock>
+                    <TextBlock Margin="0 6 0 0" HorizontalAlignment="Center" Style="{StaticResource ContentText}" Text="{Binding EstimatedTimeRemainingMessage}"></TextBlock>
+                </StackPanel>
+                
+                
+                <!--<ListView Visibility="Collapsed" Grid.Row="1" Style="{StaticResource CommonListViewStyle}" ItemsSource="{Binding Events}" ItemTemplate="{StaticResource CommonListViewItemTemplate}" />-->
+
+                <Button Grid.Row="1" HorizontalAlignment="Right" 
                         Command="{Binding CancelCommand}" 
-                        Style="{StaticResource NavigationButtonStyle}" Background="#FFC90531" 
-                        Visibility="{Binding IsInProgress, Converter={StaticResource boolToVisibilityConverter}}"/>           
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Visibility="{Binding IsInProgress, Converter={StaticResource boolToVisibilityConverter}}">
+                    <TextBlock>Cancel</TextBlock>
+                </Button>
             </Grid>
 
-            <Grid x:Name="InstallationCompleteGrid" Visibility="{Binding Progress, Converter={StaticResource intToVisibilityConverter}}">
+
+            <Grid  x:Name="InstallationCompleteGrid" Grid.Row="1" Grid.ColumnSpan="2" Margin="25 60 25 25" 
+                  Visibility="{Binding Progress, Converter={StaticResource intToVisibilityConverter}}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource Heading2}" Text="Content Installation Complete."></TextBlock>
-
-                <Button Grid.Row="3" Content="Done" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                    Command="{Binding NextCommand}"
-                    Style="{StaticResource NavigationButtonStyle}" Background="{StaticResource PearsonBackground}"
-                    IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" />
+                <!-- Completion Panel-->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <ContentControl Margin="0 0 16 0" VerticalAlignment="Top" ContentTemplate="{StaticResource CheckMark}"/>
+                    <TextBlock VerticalAlignment="Center"  Style="{StaticResource TopBarHeaderTextStyle}">Content Installation Complete</TextBlock>
+                </StackPanel>
+                
+                <Button Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                        Command="{Binding NextCommand}"
+                        Background="{StaticResource MainThemeBackgroundBrush}"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        IsEnabled="{Binding ElementName=progress, Path=Value, Mode=TwoWay, Converter={StaticResource progressToEnabledConverter}}" >
+                    <TextBlock>Launch</TextBlock>
+                </Button>
 
             </Grid>
         </Grid>
