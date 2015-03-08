@@ -102,10 +102,22 @@ namespace PSCInstaller.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("_overwrite.flg")]
+        public string OverwriteFlagFileName {
+            get {
+                return ((string)(this["OverwriteFlagFileName"]));
+            }
+            set {
+                this["OverwriteFlagFileName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <string>C:\Pearson\PSC\8-12win.zip</string>
-  <string>Conent/8-12win2.zip</string>
+  <string>Content/8-12win2.zip</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection ContentFilePaths {
             get {
@@ -113,6 +125,18 @@ namespace PSCInstaller.Properties {
             }
             set {
                 this["ContentFilePaths"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pearsonpoc.win8.exe")]
+        public string ProcessName {
+            get {
+                return ((string)(this["ProcessName"]));
+            }
+            set {
+                this["ProcessName"] = value;
             }
         }
     }

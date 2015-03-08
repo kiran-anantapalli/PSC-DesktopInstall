@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using PSCInstaller.Services;
 using System.IO;
-using System.IO.Compression;
-using System.IO.Packaging;
 using Windows.Management.Deployment;
 using System.Threading;
+
 namespace PSCInstaller.Sevices
 {
     public enum DeploymentSubject
@@ -17,11 +16,9 @@ namespace PSCInstaller.Sevices
         Installing
     }
 
-    public class ContentDeploymentService 
-        : IProgress<ProgressUpdateEventArgs>
+    public class ContentDeploymentService : IProgress<ProgressUpdateEventArgs>
     {
         public const int ProgressReportCycleThreshHold = 3;
-
         private long _temporaryDirectorySize;
         private long _transferedDirectorySize;
         private CancellationTokenSource _cancelSource;
@@ -38,27 +35,43 @@ namespace PSCInstaller.Sevices
 
         #endregion
 
-        public async Task DeployContentAsync()
+        public string GetLocalStateFolder()
+        {
+            string userDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string appDataLocalStateDirectory = @"AppData\Local\Packages\" + Properties.Settings.Default.PackageName + "_" + Properties.Settings.Default.PublisherId + @"\LocalState";
+            return Path.Combine(userDirectory, appDataLocalStateDirectory);
+        }
+
+        public async Task CopyOverrideFlag(string flagPath)
+        {
+            string targetDirectoryPath = Path.Combine(GetLocalStateFolder(), Properties.Settings.Default.OverwriteFlagFileName);
+            
+            File.Copy(flagPath, targetDirectoryPath, true);
+            RaiseMessage("Installation Complete");
+        }
+
+        public async Task<int> DeployContentAsync()
         {
             Uri packageUri = null;
             string scheme = @"file:///";
             string workingDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
-            if (!Path.IsPathRooted(ContentDeploymentService.Instance.ContentPackageFilePath))
+            if (!Path.IsPathRooted(Instance.ContentPackageFilePath))
             {
-                var absolutePath = Path.Combine(Path.Combine(scheme, workingDirectoryPath), ContentDeploymentService.Instance.ContentPackageFilePath);
+                var absolutePath = Path.Combine(Path.Combine(scheme, workingDirectoryPath), Instance.ContentPackageFilePath);
                 packageUri = new Uri(absolutePath);
             }
             else
             {
-                var absolutePath = Path.Combine(scheme, ContentDeploymentService.Instance.ContentPackageFilePath);
+                var absolutePath = Path.Combine(scheme, Instance.ContentPackageFilePath);
                 packageUri = new Uri(absolutePath);
             }
 
             _cancelSource = new CancellationTokenSource();
-            var extractDirectory = await UnzipToTemporaryLocationAsync(packageUri);
-            await CopyToUserPackageInstallationDirectoryAsync(extractDirectory);
-            await CleanupDirectoryAsync(extractDirectory);
-            RaiseMessage("Installation Complete");
+            //var extractDirectory = await UnzipToTemporaryLocationAsync(packageUri);
+            return await SevenZipToContentLocationAsync(packageUri);
+            //await CopyToUserPackageInstallationDirectoryAsync(extractDirectory);
+            //await CleanupDirectoryAsync(extractDirectory);
+            //RaiseMessage("Installation Complete");
         }
 
         private async Task CleanupDirectoryAsync(string directory)
@@ -71,76 +84,46 @@ namespace PSCInstaller.Sevices
             });
         }
 
-        private async Task<string> UnzipToTemporaryLocationAsync(Uri zipFileUri)
+        private async Task<int> SevenZipToContentLocationAsync(Uri zipFileUri)
         {
-            double perfectComplete = 0;
-            RaiseProgress(perfectComplete);
+            double percentComplete = 0;
+            RaiseProgress(percentComplete);
             string extractDirectory = string.Empty;
+            int exitCode = 0;
+
             try
             {
-                string tempPath = System.IO.Path.GetTempPath();
+                string targetDirectoryPath = GetLocalStateFolder();
+
                 string archiveName = zipFileUri.Segments.Last();
-                if( Path.HasExtension(archiveName) )
+                if (Path.HasExtension(archiveName))
                 {
                     archiveName = archiveName.Remove(archiveName.IndexOf(Path.GetExtension(archiveName)));
                 }
-
-                extractDirectory = Path.Combine(tempPath, "_" + archiveName);
-                await CleanupDirectoryAsync(extractDirectory);
-
+                extractDirectory = targetDirectoryPath;
+                //await CleanupDirectoryAsync(extractDirectory);
                 RaiseMessage("Unpacking Content");
-                var di = Directory.CreateDirectory(extractDirectory);
-                using (var fs = new FileStream(zipFileUri.AbsolutePath, FileMode.Open))
+
+                var executable = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "7zg.exe");
+
+                Directory.CreateDirectory(extractDirectory);
+
+                var arguments = " x -y -o\"" + extractDirectory + "\" \"" + zipFileUri.LocalPath + "\"";
+
+                // Extract files
+                var startInfo = new ProcessStartInfo
                 {
-                    using (ZipArchive arch = new ZipArchive(fs, ZipArchiveMode.Read) )
-                    {
-                        double unitsComplete = 0;
-                        double totalUnits = arch.Entries.Count();
-                        foreach (var item in arch.Entries)
-                        {
-                            if( _cancelSource.IsCancellationRequested)
-                            {
-                                RaiseMessage("Process has been canceled");
-                                break;
-                            }
+                    FileName = executable,
+                    UseShellExecute = false,
+                    Arguments = arguments
+                };
 
-                            RaiseMessage(string.Format("Unpacking: {0}", item.Name));
-                            RaiseFileUpdate((long)unitsComplete, (long)totalUnits, DeploymentSubject.Unpacking);
-                            if (item.Length == 0)
-                            {
-                                var rootPathRemoved = item.FullName.Substring(item.FullName.IndexOf("/") + 1);
-                                string directoryPath = Path.Combine(di.FullName, rootPathRemoved);
-                                string filepath = Path.Combine(di.FullName, directoryPath);
-                                Directory.CreateDirectory(directoryPath);
-                            }
-                            else
-                            {
-                                byte[] buffer = new byte[item.Length];
-                                using (var entryStream = item.Open())
-                                {
-                                    int bytesRead = 0;
-                                    do
-                                    {
-                                        bytesRead += await entryStream.ReadAsync(buffer, bytesRead, buffer.Length - bytesRead);
-                                    } while (bytesRead < buffer.Length);
-                                }
+                var process = Process.Start(startInfo);
+                process.WaitForExit();
 
-                                var rootPathRemoved = item.FullName.Substring(item.FullName.IndexOf("/") + 1);
-                                string filepath = Path.Combine(di.FullName, rootPathRemoved);
-                                using (var writeStream = File.OpenWrite(filepath))
-                                {
-                                    await writeStream.WriteAsync(buffer, 0, buffer.Count());
-                                }
-                            }
+                exitCode = process.ExitCode;              
 
-                            if( ++unitsComplete % ProgressReportCycleThreshHold == 0 )
-                            {
-                                perfectComplete = ((unitsComplete / totalUnits) * 100.0) * 0.5;
-                                RaiseProgress(perfectComplete);
-                            }
-                        }
-                    }
-                }
+                RaiseProgress(100);
             }
             catch (Exception ex)
             {
@@ -148,8 +131,89 @@ namespace PSCInstaller.Sevices
             }
 
             RaiseMessage("Unpacking Complete");
-            return extractDirectory;
+            return exitCode;
         }
+        
+
+        //private async Task<string> UnzipToTemporaryLocationAsync(Uri zipFileUri)
+        //{
+        //    double perfectComplete = 0;
+        //    RaiseProgress(perfectComplete);
+        //    string extractDirectory = string.Empty;
+        //    try
+        //    {
+        //        string tempPath = System.IO.Path.GetTempPath();
+        //        string archiveName = zipFileUri.Segments.Last();
+        //        if( Path.HasExtension(archiveName) )
+        //        {
+        //            archiveName = archiveName.Remove(archiveName.IndexOf(Path.GetExtension(archiveName)));
+        //        }
+
+        //        extractDirectory = Path.Combine(tempPath, "_" + archiveName);
+        //        await CleanupDirectoryAsync(extractDirectory);
+
+        //        RaiseMessage("Unpacking Content");
+        //        var di = Directory.CreateDirectory(extractDirectory);
+        //        using (var fs = new FileStream(zipFileUri.AbsolutePath, FileMode.Open))
+        //        {
+        //            using (ZipArchive arch = new ZipArchive(fs, ZipArchiveMode.Read) )
+        //            {
+        //                double unitsComplete = 0;
+        //                double totalUnits = arch.Entries.Count();
+        //                foreach (var item in arch.Entries)
+        //                {
+        //                    if( _cancelSource.IsCancellationRequested)
+        //                    {
+        //                        RaiseMessage("Process has been canceled");
+        //                        break;
+        //                    }
+
+        //                    RaiseMessage(string.Format("Unpacking: {0}", item.Name));
+        //                    RaiseFileUpdate((long)unitsComplete, (long)totalUnits, DeploymentSubject.Unpacking);
+        //                    if (item.Length == 0)
+        //                    {
+        //                        var rootPathRemoved = item.FullName.Substring(item.FullName.IndexOf("/") + 1);
+        //                        string directoryPath = Path.Combine(di.FullName, rootPathRemoved);
+        //                        string filepath = Path.Combine(di.FullName, directoryPath);
+        //                        Directory.CreateDirectory(directoryPath);
+        //                    }
+        //                    else
+        //                    {
+        //                        byte[] buffer = new byte[item.Length];
+        //                        using (var entryStream = item.Open())
+        //                        {
+        //                            int bytesRead = 0;
+        //                            do
+        //                            {
+        //                                bytesRead += await entryStream.ReadAsync(buffer, bytesRead, buffer.Length - bytesRead);
+        //                            } while (bytesRead < buffer.Length);
+        //                        }
+
+        //                        var rootPathRemoved = item.FullName.Substring(item.FullName.IndexOf("/") + 1);
+        //                        string filepath = Path.Combine(di.FullName, rootPathRemoved);
+        //                        using (var writeStream = File.OpenWrite(filepath))
+        //                        {
+        //                            await writeStream.WriteAsync(buffer, 0, buffer.Count());
+        //                        }
+        //                    }
+
+        //                    if( ++unitsComplete % ProgressReportCycleThreshHold == 0 )
+        //                    {
+        //                        perfectComplete = ((unitsComplete / totalUnits) * 100.0) * 0.5;
+        //                        RaiseProgress(perfectComplete);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        RaiseMessage(string.Format("Error Unpacking: {0}", ex.Message));
+        //    }
+
+        //    RaiseMessage("Unpacking Complete");
+        //    return extractDirectory;
+        //}
 
         private async Task CopyToUserPackageInstallationDirectoryAsync(string contentDirectory)
         {
@@ -200,7 +264,7 @@ namespace PSCInstaller.Sevices
                         return;
 
                     var fileName = Path.GetFileName(filePath);
-                    var destFilePath = System.IO.Path.Combine(targetDirectoryPath, fileName);
+                    var destFilePath = Path.Combine(targetDirectoryPath, fileName);
                     File.Copy(filePath, destFilePath, true);
 
                     var fi = new FileInfo(filePath);

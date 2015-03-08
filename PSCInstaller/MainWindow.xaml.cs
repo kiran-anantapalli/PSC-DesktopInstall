@@ -29,7 +29,8 @@ namespace PSCInstaller
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Navigate(new Uri("Views/StartPage.xaml", UriKind.Relative));
+            Navigate(new Uri("Views/DeployContent.xaml", UriKind.Relative));
+            //Navigate(new Uri("Views/StartPage.xaml", UriKind.Relative));
         }
 
         private void NavigationWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

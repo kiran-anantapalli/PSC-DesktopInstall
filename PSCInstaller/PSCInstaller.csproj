@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -41,7 +41,30 @@
   <PropertyGroup>
     <ApplicationIcon>pearson.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SevenZipSharp">
+      <HintPath>Libs\SevenZipSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
@@ -67,6 +90,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\BoolToNotBoolConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolNotToVisibilityConverter.cs" />
     <Compile Include="Converters\CountToEnabledConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\ProgressToEnabledConverter.cs" />
@@ -75,6 +99,7 @@
     <Compile Include="Sevices\ContentDeploymentService.cs" />
     <Compile Include="Utilities\ContentPresenterAttachedProperties.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\DeployContentViewModel.cs" />
     <Compile Include="ViewModels\ContentPackageSelectionViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
     <Compile Include="ViewModels\AppInstallationViewModel.cs" />
@@ -82,6 +107,9 @@
     <Compile Include="ViewModels\ContentInstallationViewModel.cs" />
     <Compile Include="Views\ContentPackageSelectionPage.xaml.cs">
       <DependentUpon>ContentPackageSelectionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DeployContent.xaml.cs">
+      <DependentUpon>DeployContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
@@ -116,6 +144,10 @@
     <Page Include="Views\ContentPackageSelectionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeployContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\StartPage.xaml">
       <SubType>Designer</SubType>
@@ -154,66 +186,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\AllowAllTrustedApps.reg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\AppxBlockMap.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\AppxMetadata\AppxBundleManifest.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\[Content_Types].xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\Dependencies\ARM\Microsoft.VCLibs.ARM.120.00.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\Dependencies\x64\Microsoft.VCLibs.x64.120.00.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\Dependencies\x86\Microsoft.VCLibs.x86.120.00.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\DeployContent.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\InstallApp.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\Pearson PSC Installation Instructions.docx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\Uninstall.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\UninstallFromCurrentUser.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\PSC\_overwrite.flg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\AppxSignature.p7x">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\PearsonPOC.Win8_1.4.3.0_language-de.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\PearsonPOC.Win8_1.4.3.0_language-fr.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\PearsonPOC.Win8_1.4.3.0_scale-140.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\PearsonPOC.Win8_1.4.3.0_scale-180.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\appxbundle\PearsonPOC.Win8_1.4.3.0_x86.appx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\Pearson.PSC_1.4.3.0.appxbundle">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -235,14 +207,10 @@
     <Content Include="Assets\Images\Logo.scale-100.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\7za.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Packages\Pearson.PSC_1.4.3_u66eud\autorun.inf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Assets\Packages\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

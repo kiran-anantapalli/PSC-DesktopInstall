@@ -25,12 +25,18 @@
     <Setting Name="PackageName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Pearson.PSC</Value>
     </Setting>
+    <Setting Name="OverwriteFlagFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">_overwrite.flg</Value>
+    </Setting>
     <Setting Name="ContentFilePaths" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;C:\Pearson\PSC\8-12win.zip&lt;/string&gt;
-  &lt;string&gt;Conent/8-12win2.zip&lt;/string&gt;
+  &lt;string&gt;Content/8-12win2.zip&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="ProcessName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pearsonpoc.win8.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -588,6 +588,21 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate x:Key="DeployContentIcon">
+        <Grid VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Margin="5 0 5 5" HorizontalAlignment="Center" FontFamily="{StaticResource CommonFontFamily}" FontSize="{StaticResource CommonFontSize1}">Deploy Content</TextBlock>
+            <Viewbox  Grid.Row="1" Margin="0,0,0,0" Height="60" Width="60">
+                <Canvas Width="90" Height="90" >
+                    <Path Stretch="Fill" Data="M25,74.5 L0.5,50 L12.75,50 L12.75,0.5 L37.25,0.5 L37.25,50 L49.5,50 z" Fill="{StaticResource GreenForeground}"  Margin="20.916,0,229.584,225.5" Stroke="Transparent" />
+                </Canvas>
+            </Viewbox>
+        </Grid>
+    </DataTemplate>
+
     <DataTemplate x:Key="NextIcon">
         <Viewbox>
             <Canvas Width="85" Height="50" Background="Transparent">

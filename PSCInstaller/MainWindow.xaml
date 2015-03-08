@@ -1,12 +1,12 @@
 ﻿<NavigationWindow x:Class="PSCInstaller.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Perason System of Courses Installer" 
+        Title="Pearson System of Courses Installer" 
         MouseLeftButtonDown="NavigationWindow_MouseLeftButtonDown">
     <NavigationWindow.Style>
         <Style TargetType="{x:Type NavigationWindow}">
             <Setter Property="Width" Value="740"/>
-            <Setter Property="Height" Value="650"/>
+            <Setter Property="Height" Value="450"/>
             <Setter Property="Padding" Value="5" />
             <Setter Property="ShowsNavigationUI" Value="False"/>
             <Setter Property="WindowStyle" Value="None"/>
