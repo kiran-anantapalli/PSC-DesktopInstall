@@ -143,8 +143,9 @@ namespace PSCInstaller.ViewModels
 
         private async Task<bool> ExtractContent()
         {
+            await Task.Delay(500);
             int exitCode = await ContentDeploymentService.Instance.DeployContentAsync();
-
+            await Task.Delay(500);
             switch (exitCode)
             {
                 case 255:
