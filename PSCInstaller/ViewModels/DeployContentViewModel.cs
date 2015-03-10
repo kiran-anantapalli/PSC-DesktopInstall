@@ -95,6 +95,8 @@ namespace PSCInstaller.ViewModels
 
         private async void OnDeploy()
         {
+            this.ErrorText = string.Empty;
+
             var success = CheckIfContentIsAlreadyInstalled();
             if (!success)
             {
@@ -146,17 +148,17 @@ namespace PSCInstaller.ViewModels
             switch (exitCode)
             {
                 case 255:
-                    this.DeploymentFinishedText = "User canceled the process";
-                    break;
+                    this.DeploymentFinishedText = "User cancelled the process";
+                    return false;
                 case 8:
                     this.DeploymentFinishedText = "Not enough memory to complete the process";
-                    break;
+                    return false;
                 case 7:
                     this.DeploymentFinishedText = "Command line error";
-                    break;
+                    return false;
                 case 2:
                     this.DeploymentFinishedText = "Fatal error";
-                    break;
+                    return false;
                 case 1:
                     this.DeploymentFinishedText = "Content successfully deployed, but with warnings";
                     break;
