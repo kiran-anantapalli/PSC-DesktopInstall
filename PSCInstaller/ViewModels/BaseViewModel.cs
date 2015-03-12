@@ -76,6 +76,13 @@ namespace PSCInstaller.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        protected void RaiseAll()
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(null));
+        }
+
         protected void UpdateUIThreadSafe(Action action)
         {
             var localAction = action;

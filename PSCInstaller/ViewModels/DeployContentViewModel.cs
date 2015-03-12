@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Threading;
 using PSCInstaller.Commands;
 using PSCInstaller.Sevices;
 using System;
@@ -130,6 +132,9 @@ namespace PSCInstaller.ViewModels
             {
                 ErrorText = "An error while marking the content as installed";
             }
+
+            // All done, force UI refresh
+            UpdateUIThreadSafe(RaiseAll);
         }
 
         private bool CopyOverrideFlag()
@@ -143,9 +148,10 @@ namespace PSCInstaller.ViewModels
 
         private async Task<bool> ExtractContent()
         {
-            await Task.Delay(500);
+            await Task.Delay(10);
             int exitCode = await ContentDeploymentService.Instance.DeployContentAsync();
-            await Task.Delay(500);
+
+
             switch (exitCode)
             {
                 case 255:
